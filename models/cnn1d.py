@@ -311,6 +311,51 @@ class MultiScaleSpecNet(nn.Module):
             return self.head(emb)
         return emb
 
+class RamanPCAMLP(nn.Module):
+    """
+    MLP that operates on PCA-reduced Raman spectra.
+    The PCA projection is embedded as a frozen nn.Linear layer.
+    """
+    def __init__(self, in_channels: int = 1, pca_dim: int = 128, num_classes: int = None, dropout: float = 0.3):
+        super().__init__()
+        self.pca_proj = nn.Linear(2048, pca_dim)
+        # Freeze PCA layer initially (will be initialized in train script)
+        for param in self.pca_proj.parameters():
+            param.requires_grad = False
+            
+        self.mlp = nn.Sequential(
+            nn.BatchNorm1d(pca_dim),
+            nn.Linear(pca_dim, 512),
+            nn.BatchNorm1d(512),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout),
+            
+            nn.Linear(512, 256),
+            nn.BatchNorm1d(256),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout),
+            
+            nn.Linear(256, 128),
+            nn.BatchNorm1d(128),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout)
+        )
+        self.head = nn.Linear(128, num_classes) if num_classes else None
+
+    def forward_features(self, x):
+        # x shape: (batch, 1, 2048)
+        if x.dim() == 3:
+            x = x.squeeze(1) # shape: (batch, 2048)
+        x = self.pca_proj(x)
+        x = self.mlp(x)
+        return x
+
+    def forward(self, x):
+        emb = self.forward_features(x)
+        if self.head is not None:
+            return self.head(emb)
+        return emb
+
 # ---------------------------------------------------------------------------
 # Utility: model summary
 # ---------------------------------------------------------------------------

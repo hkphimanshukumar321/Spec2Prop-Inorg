@@ -18,7 +18,8 @@ from torch.utils.data import DataLoader
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, confusion_matrix
 
 from models import Spec2PropDataset
-from models.cnn1d import SimpleCNN1D, LiteSpecNet, ResidualCNN1D
+from models.cnn1d import SimpleCNN1D, LiteSpecNet, ResidualCNN1D, MultiScaleSpecNet, RamanPCAMLP
+from models.raman_former import RamanFormer1D
 from models.fusion_models import FusionSpec2PropNet, Spec2PropLite, DescriptorMLP
 from models.multimodal_cnn import DualBranchRamanXRDNet
 from models.dataset import build_label_encoder, add_model_family_column, get_descriptor_dim
@@ -28,6 +29,9 @@ def get_family_model(model_name, num_classes):
     if model_name == "SimpleCNN1D": return SimpleCNN1D(in_channels=1, num_classes=num_classes)
     elif model_name == "LiteSpecNet": return LiteSpecNet(in_channels=1, num_classes=num_classes)
     elif model_name == "ResidualCNN1D": return ResidualCNN1D(in_channels=1, num_classes=num_classes)
+    elif model_name == "MultiScaleSpecNet": return MultiScaleSpecNet(in_channels=1, num_classes=num_classes)
+    elif model_name == "RamanPCAMLP": return RamanPCAMLP(in_channels=1, num_classes=num_classes)
+    elif model_name == "RamanFormer1D": return RamanFormer1D(in_channels=1, num_classes=num_classes)
     else: raise ValueError(f"Unknown family model: {model_name}")
 
 def get_property_model(model_name, tasks, desc_dim):

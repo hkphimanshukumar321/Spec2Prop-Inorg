@@ -10,10 +10,12 @@ data:
   add_noise: true
 
 models:
-  - MultiScaleSpecNet
-  - SimpleCNN1D
-  - LiteSpecNet
-  - ResidualCNN1D
+#  - MultiScaleSpecNet
+#  - SimpleCNN1D
+#  - LiteSpecNet
+#  - ResidualCNN1D
+#  - RamanPCAMLP
+  - RamanFormer1D
 
 training:
   batch_size: 64
@@ -27,6 +29,9 @@ training:
   use_class_balanced_sampler: true
   early_stopping_patience: 15
   seed: 42
+  
+  # For RamanPCAMLP
+  pca_dim: 128
 
 output:
   results_dir: results/family_classification

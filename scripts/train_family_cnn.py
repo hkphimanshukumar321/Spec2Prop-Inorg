@@ -17,8 +17,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, confusion_matrix
-
-from models import Spec2PropDataset, SimpleCNN1D, LiteSpecNet, ResidualCNN1D, MultiScaleSpecNet
+from models import Spec2PropDataset, SimpleCNN1D, LiteSpecNet, ResidualCNN1D, MultiScaleSpecNet, RamanPCAMLP, RamanFormer1D
 from models.dataset import build_label_encoder, save_label_encoder
 
 class FocalLoss(nn.Module):
@@ -48,6 +47,12 @@ def get_model(model_name, num_classes):
         return ResidualCNN1D(in_channels=1, num_classes=num_classes)
     elif model_name == "MultiScaleSpecNet":
         return MultiScaleSpecNet(in_channels=1, num_classes=num_classes)
+    elif model_name == "RamanPCAMLP":
+        # Note: pca_dim is injected later, we just need the class here
+        # It defaults to 128 if not passed
+        return RamanPCAMLP(in_channels=1, num_classes=num_classes)
+    elif model_name == "RamanFormer1D":
+        return RamanFormer1D(in_channels=1, num_classes=num_classes)
     else:
         raise ValueError(f"Unknown model: {model_name}")
 
@@ -183,7 +188,31 @@ def main(config_path):
     
     for model_name in cfg["models"]:
         print(f"\n{'='*50}\nTraining {model_name}\n{'='*50}")
-        model = get_model(model_name, num_classes).to(device)
+        
+        # Handle RamanPCAMLP specifically
+        if model_name == "RamanPCAMLP":
+            pca_dim = cfg["training"].get("pca_dim", 128)
+            model = RamanPCAMLP(in_channels=1, pca_dim=pca_dim, num_classes=num_classes).to(device)
+            
+            print(f"Computing PCA ({pca_dim} components) on training set for RamanPCAMLP initialization...")
+            from sklearn.decomposition import PCA
+            
+            # Extract all train Raman spectra
+            X_train = np.zeros((len(train_dataset), 2048), dtype=np.float32)
+            for i in range(len(train_dataset)):
+                X_train[i] = train_dataset[i]["raman"].numpy().flatten()
+            
+            pca = PCA(n_components=pca_dim)
+            pca.fit(X_train)
+            
+            with torch.no_grad():
+                model.pca_proj.weight.copy_(torch.from_numpy(pca.components_).float())
+                bias = -np.dot(pca.mean_, pca.components_.T)
+                model.pca_proj.bias.copy_(torch.from_numpy(bias).float())
+            print("PCA weights frozen and injected successfully.")
+        else:
+            model = get_model(model_name, num_classes).to(device)
+            
         optimizer = torch.optim.AdamW(
             model.parameters(), 
             lr=cfg["training"]["lr"], 
