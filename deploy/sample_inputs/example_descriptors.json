@@ -1,0 +1,10 @@
+{
+  "n_elements": 2,
+  "avg_electronegativity": 1.74,
+  "avg_atomic_mass": 30.05,
+  "contains_transition_metal": false,
+  "contains_3d_transition_metal": false,
+  "contains_4d_transition_metal": false,
+  "contains_5d_transition_metal": false,
+  "chemical_family_model": "Oxide"
+}

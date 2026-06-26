@@ -1,0 +1,41 @@
+{
+  "model_name": "LiteSpecNet",
+  "task": "chemical_family_classification",
+  "input_shape": [
+    1,
+    1,
+    2048
+  ],
+  "output_heads": [
+    "chemical_family_model"
+  ],
+  "num_classes": 9,
+  "class_labels": {
+    "0": "Borate",
+    "1": "Carbonate",
+    "2": "Halide",
+    "3": "Other/Rare",
+    "4": "Oxide",
+    "5": "Phosphate",
+    "6": "Silicate",
+    "7": "Sulfate",
+    "8": "Sulfide"
+  },
+  "training_subset": "spec2prop_clean_inorganic.pkl (4027 samples)",
+  "preprocessing": {
+    "wn_min": 100,
+    "wn_max": 4000,
+    "n_points": 2048,
+    "baseline_correction": true,
+    "smoothing": true,
+    "normalization": "max"
+  },
+  "parameter_count": 6553,
+  "model_size_mb": 0.026,
+  "export_date": "2026-06-26T21:17:29.908366",
+  "limitations": [
+    "Trained on RRUFF Raman spectra only",
+    "Screening-level prediction, not experimental confirmation",
+    "Performance may degrade on spectra from different instruments or preprocessing"
+  ]
+}

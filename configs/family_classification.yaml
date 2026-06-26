@@ -6,19 +6,25 @@ data:
   splits_dir: data/processed/splits/clean_inorganic
   cache_dir: data/processed/cache/clean_inorganic
   target_col: chemical_family_model
+  random_shift: true
+  add_noise: true
 
 models:
+  - MultiScaleSpecNet
   - SimpleCNN1D
   - LiteSpecNet
   - ResidualCNN1D
 
 training:
   batch_size: 64
-  epochs: 100
-  lr: 0.001
+  epochs: 150
+  lr: 0.0005
   weight_decay: 0.0001
   dropout: 0.3
   use_class_weights: true
+  use_focal_loss: true
+  focal_gamma: 2.0
+  use_class_balanced_sampler: true
   early_stopping_patience: 15
   seed: 42
 

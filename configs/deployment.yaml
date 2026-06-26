@@ -1,0 +1,53 @@
+# Spec2Prop-Edge: Deployment Configuration
+# ==========================================
+
+preprocessing:
+  raman:
+    wn_min: 100
+    wn_max: 4000
+    n_points: 2048
+    baseline_correction: true
+    smoothing: true
+    smoothing_window: 11
+    smoothing_polyorder: 3
+    normalization: max
+  xrd:
+    n_points: 2048
+    baseline_correction: false
+    smoothing: true
+    smoothing_window: 11
+    smoothing_polyorder: 3
+    normalization: max
+
+deployment:
+  task: family                 # family | property | multimodal
+  model_type: torchscript      # torchscript | onnx | pytorch
+  device: cpu
+  top_k: 3
+  output_dir: deploy/outputs
+  include_saliency: true
+  include_disclaimer: true
+
+export:
+  models:
+    family:
+      checkpoint: results/family_classification/LiteSpecNet_best.pt
+      model_class: LiteSpecNet
+      num_classes: null          # auto-detected from label encoder
+      label_encoder: results/family_classification/chemical_family_model_encoder.json
+    property:
+      checkpoint: results/property_prediction/FusionSpec2PropNet_best.pt
+      model_class: FusionSpec2PropNet
+      label_encoders:
+        band_gap_class: results/property_prediction/band_gap_class_encoder.json
+        is_metal: results/property_prediction/is_metal_encoder.json
+        formation_energy_class: results/property_prediction/formation_energy_class_encoder.json
+    multimodal:
+      checkpoint: results/multimodal_raman_xrd/DualBranchRamanXRDNet_best.pt
+      model_class: DualBranchRamanXRDNet
+      label_encoder: results/multimodal_raman_xrd/chemical_family_model_encoder.json
+  output_dir: deploy/exported
+
+benchmark:
+  num_runs: 500
+  warmup_runs: 20

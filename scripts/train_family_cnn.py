@@ -18,8 +18,26 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, confusion_matrix
 
-from models import Spec2PropDataset, SimpleCNN1D, LiteSpecNet, ResidualCNN1D
+from models import Spec2PropDataset, SimpleCNN1D, LiteSpecNet, ResidualCNN1D, MultiScaleSpecNet
 from models.dataset import build_label_encoder, save_label_encoder
+
+class FocalLoss(nn.Module):
+    def __init__(self, weight=None, gamma=2.0, reduction='mean'):
+        super().__init__()
+        self.weight = weight
+        self.gamma = gamma
+        self.reduction = reduction
+
+    def forward(self, inputs, targets):
+        ce_loss = nn.functional.cross_entropy(inputs, targets, reduction='none', weight=self.weight)
+        pt = torch.exp(-ce_loss)
+        focal_loss = ((1 - pt) ** self.gamma) * ce_loss
+        if self.reduction == 'mean':
+            return focal_loss.mean()
+        elif self.reduction == 'sum':
+            return focal_loss.sum()
+        else:
+            return focal_loss
 
 def get_model(model_name, num_classes):
     if model_name == "SimpleCNN1D":
@@ -28,6 +46,8 @@ def get_model(model_name, num_classes):
         return LiteSpecNet(in_channels=1, num_classes=num_classes)
     elif model_name == "ResidualCNN1D":
         return ResidualCNN1D(in_channels=1, num_classes=num_classes)
+    elif model_name == "MultiScaleSpecNet":
+        return MultiScaleSpecNet(in_channels=1, num_classes=num_classes)
     else:
         raise ValueError(f"Unknown model: {model_name}")
 
@@ -52,7 +72,6 @@ def train_epoch(model, dataloader, criterion, optimizer, device, target_col):
         loss = criterion(logits, y)
         loss.backward()
         
-        # Gradient clipping
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
         optimizer.step()
         
@@ -108,7 +127,6 @@ def main(config_path):
     out_dir = cfg["output"]["results_dir"]
     os.makedirs(out_dir, exist_ok=True)
     
-    # --- Prepare Label Encoder ---
     meta_df = pd.read_pickle(cfg["data"]["metadata_pkl"])
     target_col = cfg["data"]["target_col"]
     from models.dataset import add_model_family_column
@@ -119,19 +137,33 @@ def main(config_path):
     num_classes = len(encoder)
     print(f"Number of classes: {num_classes}")
     
-    # --- Datasets ---
     kwargs = dict(
         metadata_pkl=cfg["data"]["metadata_pkl"],
         raman_parquet=cfg["data"]["raman_parquet"],
         target_cols=[target_col],
         label_encoders={target_col: encoder},
         cache_dir=cfg["data"]["cache_dir"],
+        random_shift=cfg["data"].get("random_shift", False),
+        add_noise=cfg["data"].get("add_noise", False)
     )
     
     train_dataset = Spec2PropDataset(split_csv=os.path.join(cfg["data"]["splits_dir"], "train.csv"), **kwargs)
     val_dataset = Spec2PropDataset(split_csv=os.path.join(cfg["data"]["splits_dir"], "val.csv"), **kwargs)
     
-    train_loader = DataLoader(train_dataset, batch_size=cfg["training"]["batch_size"], shuffle=True, drop_last=True)
+    if cfg["training"].get("use_class_balanced_sampler"):
+        from torch.utils.data import WeightedRandomSampler
+        weights = train_dataset.get_class_weights(target_col)
+        sample_weights = torch.zeros(len(train_dataset), dtype=torch.float)
+        for i in range(len(train_dataset)):
+            t = train_dataset.targets[target_col][i]
+            if t >= 0:
+                sample_weights[i] = weights[t]
+        sampler = WeightedRandomSampler(sample_weights, num_samples=len(sample_weights), replacement=True)
+        train_loader = DataLoader(train_dataset, batch_size=cfg["training"]["batch_size"], sampler=sampler, drop_last=True)
+        print("Using Class-Balanced Sampler.")
+    else:
+        train_loader = DataLoader(train_dataset, batch_size=cfg["training"]["batch_size"], shuffle=True, drop_last=True)
+        
     val_loader = DataLoader(val_dataset, batch_size=cfg["training"]["batch_size"], shuffle=False)
     
     class_weights = None
@@ -141,9 +173,12 @@ def main(config_path):
             class_weights = class_weights.to(device)
             print("Using class weights.")
             
-    criterion = nn.CrossEntropyLoss(weight=class_weights)
+    if cfg["training"].get("use_focal_loss"):
+        criterion = FocalLoss(weight=class_weights, gamma=cfg["training"].get("focal_gamma", 2.0))
+        print("Using Focal Loss.")
+    else:
+        criterion = nn.CrossEntropyLoss(weight=class_weights)
     
-    # --- Training Loop for each model ---
     all_results = {}
     
     for model_name in cfg["models"]:
@@ -171,8 +206,8 @@ def main(config_path):
             
             history.append({
                 "epoch": epoch+1,
-                "train_loss": tr_loss, "train_f1": tr_f1,
-                "val_loss": val_loss, "val_f1": val_f1,
+                "train_loss": tr_loss, "train_acc": tr_acc, "train_f1": tr_f1,
+                "val_loss": val_loss, "val_acc": val_acc, "val_f1": val_f1,
                 "time": t1-t0
             })
             

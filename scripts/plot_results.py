@@ -54,12 +54,40 @@ def plot_ablation(results_dir):
     # Generates bar charts comparing models
     pass
 
+import json
+
+def plot_confusion_matrices(results_dir, task):
+    task_dir = os.path.join(results_dir, task)
+    cm_path = os.path.join(task_dir, "confusion_matrices.json")
+    if not os.path.exists(cm_path): return
+    
+    out_dir = os.path.join(results_dir, "figures", task, "confusion_matrices")
+    os.makedirs(out_dir, exist_ok=True)
+    
+    with open(cm_path, "r") as f:
+        cm_data = json.load(f)
+        
+    for model_name, tasks_dict in cm_data.items():
+        for target_name, cm in tasks_dict.items():
+            cm_arr = np.array(cm)
+            plt.figure(figsize=(10, 8))
+            sns.heatmap(cm_arr, annot=True, fmt="d", cmap="Blues")
+            plt.title(f"{model_name} Confusion Matrix\nTask: {target_name}")
+            plt.xlabel("Predicted")
+            plt.ylabel("True")
+            plt.tight_layout()
+            
+            plt.savefig(os.path.join(out_dir, f"{model_name}_{target_name}_cm.png"), dpi=300)
+            plt.close()
+            print(f"Saved confusion matrix for {model_name} ({target_name}) in {task}")
+
 def main(results_dir):
     print("Generating result plots...")
     os.makedirs(os.path.join(results_dir, "figures"), exist_ok=True)
     
     for task in ["family_classification", "property_prediction", "multimodal_raman_xrd"]:
         plot_training_curves(results_dir, task)
+        plot_confusion_matrices(results_dir, task)
         
     print("Plotting complete. Check results/figures/")
 

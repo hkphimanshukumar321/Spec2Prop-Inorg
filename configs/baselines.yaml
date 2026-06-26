@@ -23,3 +23,22 @@ baselines:
 
 output:
   results_dir: results/baselines
+
+property_baselines:
+  data:
+    metadata_pkl: data/processed/spec2prop_property_matched_inorganic.pkl
+    raman_parquet: data/processed/spec2prop_raman.parquet
+    splits_dir: data/processed/splits/property_matched_inorganic
+    cache_dir: data/processed/cache/property_matched
+    target_cols:
+      - band_gap_class
+      - is_metal
+      - formation_energy_class
+  models:
+    - RandomForest
+    - XGBoost
+  pca_dims:
+    - 64
+    - null # No PCA
+  output:
+    results_dir: results/property_baselines

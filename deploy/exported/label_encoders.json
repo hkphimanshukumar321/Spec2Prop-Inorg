@@ -1,0 +1,13 @@
+{
+  "chemical_family_model": {
+    "Borate": 0,
+    "Carbonate": 1,
+    "Halide": 2,
+    "Other/Rare": 3,
+    "Oxide": 4,
+    "Phosphate": 5,
+    "Silicate": 6,
+    "Sulfate": 7,
+    "Sulfide": 8
+  }
+}

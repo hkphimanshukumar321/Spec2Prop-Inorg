@@ -1,0 +1,13 @@
+{
+  "task": "family",
+  "model_class": "LiteSpecNet",
+  "model_file": "family_litespecnet_torchscript.pt",
+  "label_encoder_file": "label_encoders.json",
+  "input_shape": [
+    1,
+    1,
+    2048
+  ],
+  "num_classes": 9,
+  "device": "cpu"
+}

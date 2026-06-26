@@ -48,9 +48,23 @@ def get_property_model(model_name, tasks, desc_dim):
     else: raise ValueError(f"Unknown property model: {model_name}")
 
 def get_multimodal_model(model_name, tasks):
-    if model_name == "SimpleCNN1D": return DualBranchRamanXRDNet(tasks=tasks, cnn_type="SimpleCNN1D")
-    elif model_name == "DualBranchRamanXRDNet": return DualBranchRamanXRDNet(tasks=tasks, cnn_type="LiteSpecNet")
-    else: raise ValueError(f"Unknown multimodal model: {model_name}")
+    if model_name == "SimpleCNN1D":
+        import torch.nn as nn
+        class RamanOnly(nn.Module):
+            def __init__(self, tasks):
+                super().__init__()
+                # Assuming first task is family for num_classes
+                nc = list(tasks.values())[0]
+                self.cnn = SimpleCNN1D(1, num_classes=nc)
+            def forward(self, raman, xrd):
+                # Return dict matching target_col name
+                task_name = list(tasks.keys())[0]
+                return {task_name: self.cnn(raman)}
+        return RamanOnly(tasks)
+    elif model_name == "DualBranchRamanXRDNet": 
+        return DualBranchRamanXRDNet(tasks=tasks, descriptor_dim=0)
+    else: 
+        raise ValueError(f"Unknown multimodal model: {model_name}")
 
 # --- Core Evaluation Logic ---
 def calc_all_metrics(y_true, y_pred, mask):
@@ -86,6 +100,8 @@ def run_inference(model, dataloader, target_cols, device, is_multimodal=False, i
             
             if is_multimodal:
                 logits = model(x, x_xrd)
+                if "family" in logits:
+                    logits[target_cols[0]] = logits["family"]
             elif is_property:
                 logits = model(x, d)
             else:
@@ -198,7 +214,7 @@ def evaluate_multimodal(cfg_path, device):
     kwargs = dict(
         metadata_pkl=cfg["data"]["metadata_pkl"], raman_parquet=cfg["data"]["raman_parquet"],
         target_cols=[target_col], label_encoders={target_col: encoder}, use_xrd=True,
-        xrd_parquet=cfg["data"]["xrd_parquet"], cache_dir=cfg["data"]["cache_dir"]
+        xrd_pkl=cfg["data"].get("xrd_pkl"), cache_dir=cfg["data"]["cache_dir"]
     )
     test_dataset = Spec2PropDataset(split_csv=os.path.join(cfg["data"]["splits_dir"], "test.csv"), **kwargs)
     test_loader = DataLoader(test_dataset, batch_size=cfg["training"]["batch_size"], shuffle=False)
@@ -210,7 +226,7 @@ def evaluate_multimodal(cfg_path, device):
         pt_path = os.path.join(out_dir, f"{model_name}_best.pt")
         if not os.path.exists(pt_path): continue
         
-        model = get_multimodal_model(model_name, {target_col: len(encoder)}).to(device)
+        model = get_multimodal_model(model_name, {"family": len(encoder)}).to(device)
         model.load_state_dict(torch.load(pt_path, map_location=device))
         
         m, cm = run_inference(model, test_loader, [target_col], device, is_multimodal=True)

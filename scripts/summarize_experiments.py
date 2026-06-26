@@ -20,9 +20,9 @@ def load_json(path):
 def main(results_dir):
     out_path = os.path.join(results_dir, "FINAL_EXPERIMENT_SUMMARY.md")
     
-    family_metrics = load_json(os.path.join(results_dir, "family_classification", "metrics.json"))
-    prop_metrics = load_json(os.path.join(results_dir, "property_prediction", "metrics.json"))
-    mm_metrics = load_json(os.path.join(results_dir, "multimodal_raman_xrd", "metrics.json"))
+    family_metrics = load_json(os.path.join(results_dir, "family_classification", "test_metrics.json"))
+    prop_metrics = load_json(os.path.join(results_dir, "property_prediction", "test_metrics.json"))
+    mm_metrics = load_json(os.path.join(results_dir, "multimodal_raman_xrd", "test_metrics.json"))
     edge_metrics = load_json(os.path.join(results_dir, "edge", "edge_benchmark.json"))
     
     baseline_csv = os.path.join(results_dir, "baselines", "baseline_comparison.csv")
@@ -35,8 +35,10 @@ def main(results_dir):
         # 1. Family Classification
         f.write("## Task 1: Chemical Family Classification\n")
         if family_metrics:
+            f.write("| Model | Accuracy | Macro F1 |\n")
+            f.write("|---|---|---|\n")
             for model, m in family_metrics.items():
-                f.write(f"- **{model}**: Macro F1 = {m.get('best_val_f1', 0):.4f}\n")
+                f.write(f"| {model} | {m.get('accuracy', 0):.4f} | {m.get('macro_f1', 0):.4f} |\n")
         else:
             f.write("No results found yet.\n")
         f.write("\n")
@@ -46,9 +48,11 @@ def main(results_dir):
         if prop_metrics:
             for model, m in prop_metrics.items():
                 f.write(f"### {model}\n")
-                f.write(f"Average Task F1: {m.get('avg_val_f1', 0):.4f}\n")
-                for task, t_m in m.get('tasks', {}).items():
-                    f.write(f"- {task}: Acc = {t_m.get('acc',0):.4f}, F1 = {t_m.get('f1',0):.4f}\n")
+                f.write("| Task | Accuracy | Macro F1 |\n")
+                f.write("|---|---|---|\n")
+                for task, t_m in m.items():
+                    if isinstance(t_m, dict):
+                        f.write(f"| {task} | {t_m.get('accuracy',0):.4f} | {t_m.get('macro_f1',0):.4f} |\n")
         else:
             f.write("No results found yet.\n")
         f.write("\n")
@@ -56,8 +60,10 @@ def main(results_dir):
         # 3. Multimodal
         f.write("## Task 3: Multimodal Raman + XRD\n")
         if mm_metrics:
+            f.write("| Model | Accuracy | Macro F1 |\n")
+            f.write("|---|---|---|\n")
             for model, m in mm_metrics.items():
-                f.write(f"- **{model}**: Macro F1 = {m.get('val_macro_f1', 0):.4f}\n")
+                f.write(f"| {model} | {m.get('accuracy', 0):.4f} | {m.get('macro_f1', 0):.4f} |\n")
         else:
             f.write("No results found yet.\n")
         f.write("\n")

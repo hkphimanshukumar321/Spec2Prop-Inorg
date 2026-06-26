@@ -167,6 +167,8 @@ class Spec2PropDataset(Dataset):
         cache_dir: Optional[str] = None,
         n_raman_points: int = 2048,
         n_xrd_points: int = 2048,
+        random_shift: bool = False,
+        add_noise: bool = False,
     ):
         super().__init__()
         self.target_cols = target_cols
@@ -176,6 +178,8 @@ class Spec2PropDataset(Dataset):
         self.use_xrd = use_xrd
         self.n_raman_points = n_raman_points
         self.n_xrd_points = n_xrd_points
+        self.random_shift = random_shift
+        self.add_noise = add_noise
 
         # --- Load split sample IDs ---
         split_df = pd.read_csv(split_csv)
@@ -373,10 +377,17 @@ class Spec2PropDataset(Dataset):
     def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
         result = {}
         # Raman spectrum: shape (1, n_points) for Conv1d
-        result["raman"] = torch.from_numpy(
-            self.raman_data[idx: idx + 1] if self.raman_data.ndim == 1
-            else self.raman_data[idx]
-        ).float().unsqueeze(0)
+        raman_arr = self.raman_data[idx: idx + 1] if self.raman_data.ndim == 1 else self.raman_data[idx]
+        
+        # Apply augmentations if enabled
+        if getattr(self, "random_shift", False) and np.random.rand() < 0.5:
+            shift = np.random.randint(-15, 15)
+            raman_arr = np.roll(raman_arr, shift)
+        if getattr(self, "add_noise", False) and np.random.rand() < 0.5:
+            noise = np.random.normal(0, 0.05, size=raman_arr.shape)
+            raman_arr = raman_arr + noise
+            
+        result["raman"] = torch.from_numpy(raman_arr).float().unsqueeze(0)
 
         # XRD spectrum
         if self.use_xrd and hasattr(self, "xrd_data"):

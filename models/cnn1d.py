@@ -239,6 +239,79 @@ class ResidualCNN1D(nn.Module):
 
 
 # ---------------------------------------------------------------------------
+# MultiScaleSpecNet with ASPP and Channel Attention
+# ---------------------------------------------------------------------------
+
+class ASPP1D(nn.Module):
+    def __init__(self, in_ch, out_ch, dilations=[1, 6, 12, 18]):
+        super().__init__()
+        self.convs = nn.ModuleList([
+            nn.Conv1d(in_ch, out_ch, kernel_size=3, padding=d, dilation=d)
+            for d in dilations
+        ])
+        self.proj = nn.Conv1d(out_ch * len(dilations), out_ch, 1)
+        self.bn = nn.BatchNorm1d(out_ch)
+        
+    def forward(self, x):
+        res = [conv(x) for conv in self.convs]
+        out = torch.cat(res, dim=1)
+        return F.relu(self.bn(self.proj(out)))
+
+class CAS1D(nn.Module):
+    def __init__(self, channels, reduction=16):
+        super().__init__()
+        self.avg_pool = nn.AdaptiveAvgPool1d(1)
+        self.fc1 = nn.Conv1d(channels, channels // reduction, 1)
+        self.fc2 = nn.Conv1d(channels // reduction, channels, 1)
+        
+    def forward(self, x):
+        w = self.avg_pool(x)
+        w = F.relu(self.fc1(w))
+        w = torch.sigmoid(self.fc2(w))
+        return x * w
+
+class MultiScaleSpecNet(nn.Module):
+    """
+    Advanced 1D-CNN using ASPP for multi-scale peak detection and Ghost/CAS
+    for efficient channel attention.
+    """
+    def __init__(self, in_channels=1, embed_dim=128, num_classes=None, dropout=0.3):
+        super().__init__()
+        # Initial large kernel
+        self.stem = nn.Sequential(
+            nn.Conv1d(in_channels, 32, kernel_size=31, padding=15),
+            nn.BatchNorm1d(32),
+            nn.ReLU(inplace=True),
+            nn.MaxPool1d(4)
+        )
+        self.aspp1 = ASPP1D(32, 64)
+        self.cas1 = CAS1D(64, reduction=8)
+        self.pool1 = nn.MaxPool1d(4)
+        
+        self.aspp2 = ASPP1D(64, 128)
+        self.cas2 = CAS1D(128, reduction=8)
+        self.pool2 = nn.MaxPool1d(4)
+        
+        self.gap = nn.AdaptiveAvgPool1d(1)
+        self.fc_embed = nn.Linear(128, embed_dim)
+        self.drop = nn.Dropout(dropout)
+        self.head = nn.Linear(embed_dim, num_classes) if num_classes else None
+
+    def forward_features(self, x):
+        x = self.stem(x)
+        x = self.pool1(self.cas1(self.aspp1(x)))
+        x = self.pool2(self.cas2(self.aspp2(x)))
+        x = self.gap(x).squeeze(-1)
+        x = self.drop(F.relu(self.fc_embed(x)))
+        return x
+
+    def forward(self, x):
+        emb = self.forward_features(x)
+        if self.head is not None:
+            return self.head(emb)
+        return emb
+
+# ---------------------------------------------------------------------------
 # Utility: model summary
 # ---------------------------------------------------------------------------
 

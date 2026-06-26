@@ -1,0 +1,4 @@
+sample_id,task,model,rank,class,confidence,inference_time_ms,device
+example_raman,family,family_litespecnet_torchscript.pt,1,Borate,0.15704445540905,44.42,cpu
+example_raman,family,family_litespecnet_torchscript.pt,2,Carbonate,0.14418768882751465,44.42,cpu
+example_raman,family,family_litespecnet_torchscript.pt,3,Halide,0.13149739801883698,44.42,cpu
