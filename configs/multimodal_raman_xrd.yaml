@@ -1,0 +1,26 @@
+# Spec2Prop-Inorg: Multimodal Raman+XRD Config
+task: multimodal_raman_xrd
+data:
+  metadata_pkl: data/processed/spec2prop_xrd_linked_inorganic.pkl
+  raman_parquet: data/processed/spec2prop_raman.parquet
+  xrd_pkl: data/processed/spec2prop_xrd_linked_inorganic.pkl
+  splits_dir: data/processed/splits/xrd_linked_inorganic
+  cache_dir: data/processed/cache/xrd_linked
+  target_col: chemical_family_model
+
+models:
+  - SimpleCNN1D       # Raman-only ablation
+  - DualBranchRamanXRDNet # Raman + XRD fusion
+
+training:
+  batch_size: 64
+  epochs: 100
+  lr: 0.001
+  weight_decay: 0.0001
+  dropout: 0.3
+  use_class_weights: true
+  early_stopping_patience: 15
+  seed: 42
+
+output:
+  results_dir: results/multimodal_raman_xrd

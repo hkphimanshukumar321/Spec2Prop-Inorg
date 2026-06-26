@@ -1,0 +1,25 @@
+# Spec2Prop-Inorg: Traditional Baselines Config
+task: baselines
+
+data:
+  metadata_pkl: data/processed/spec2prop_clean_inorganic.pkl
+  raman_parquet: data/processed/spec2prop_raman.parquet
+  splits_dir: data/processed/splits/clean_inorganic
+  cache_dir: data/processed/cache/clean_inorganic
+  target_col: chemical_family_model
+
+baselines:
+  models:
+    - SVM
+    - RandomForest
+    - LogisticRegression
+    - kNN
+    - XGBoost
+  pca_dims:
+    - 32
+    - 64
+    - 128
+    - null # No PCA
+
+output:
+  results_dir: results/baselines

@@ -1,0 +1,9 @@
+{
+  "total": 4027,
+  "train": 2820,
+  "val": 603,
+  "test": 604,
+  "train_groups": 2814,
+  "val_groups": 603,
+  "test_groups": 603
+}

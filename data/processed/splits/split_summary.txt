@@ -1,0 +1,12 @@
+Spec2Prop-Inorg Data Split Summary
+==================================
+
+Total samples: 9980
+Train samples: 6986
+Val samples:   1497
+Test samples:  1497
+
+Chemical Family Distribution (Train/Val/Test):
+--------------------------------------------------
+Other               :      6 /      1 /      1 (Total: 8)
+Unknown             :   6980 /   1496 /   1496 (Total: 9972)
