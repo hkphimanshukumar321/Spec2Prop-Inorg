@@ -1,0 +1,59 @@
+# Spec2Prop-Inorg: Hybrid Pipeline Config
+# ========================================
+# Unified config for the 4-stage hybrid NN + Classical ML pipeline.
+
+task: hybrid_classification
+
+data:
+  metadata_pkl: data/processed/spec2prop_clean_inorganic.pkl
+  raman_parquet: data/processed/spec2prop_raman.parquet
+  splits_dir: data/processed/splits/clean_inorganic
+  cache_dir: data/processed/cache/clean_inorganic
+  target_col: chemical_family_model
+
+# Stage 0: Hard Baseline
+hard_baseline:
+  xgboost:
+    n_estimators: 1000
+    max_depth: 6
+    subsample: 0.8
+    colsample_bytree: 0.3
+    early_stopping_rounds: 50
+
+# Stage 1: SupCon Training
+supcon:
+  backbones:
+    - SimpleCNN1D
+    - RamanFormer1D
+  temperature: 0.07
+  supcon_weight: 0.5       # λ for SupCon vs FocalLoss balance
+  projection_dim: 128
+  epochs: 200
+  lr: 0.0003
+  batch_size: 64
+  early_stopping_patience: 20
+  seed: 42
+
+# Stage 2: Heterogeneous Features + GBDT
+hybrid:
+  feature_vector:
+    cnn_embed_dim: 128
+    pca_dim: 32
+    n_domain_peaks: 10
+    subsample_stride: 32
+  lightgbm:
+    boosting_type: dart
+    n_estimators: 1000
+    max_depth: 6
+    class_weight: balanced
+    optuna_trials: 50       # Set to 0 to skip Optuna tuning
+  tabpfn:
+    enabled: true
+    device: cpu             # 'cuda' if GPU available
+
+# Stage 3: Ensemble
+ensemble:
+  method: probability_average
+
+output:
+  results_dir: results/hybrid

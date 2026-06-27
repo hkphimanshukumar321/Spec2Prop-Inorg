@@ -1,7 +1,7 @@
 {
   "task": "family",
-  "model_class": "LiteSpecNet",
-  "model_file": "family_litespecnet_torchscript.pt",
+  "model_class": "MultiScaleSpecNet",
+  "model_file": "family_multiscalespecnet_torchscript.pt",
   "label_encoder_file": "label_encoders.json",
   "input_shape": [
     1,

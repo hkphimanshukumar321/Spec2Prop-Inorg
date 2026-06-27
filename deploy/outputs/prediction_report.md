@@ -4,8 +4,8 @@
 **Task**: family
 **Model**: family_litespecnet_torchscript.pt
 **Device**: cpu
-**Inference Time**: 44.42 ms
-**Timestamp**: 2026-06-26T21:17:40.434846
+**Inference Time**: 44.75 ms
+**Timestamp**: 2026-06-27T21:16:23.607847
 
 ## Predictions
 

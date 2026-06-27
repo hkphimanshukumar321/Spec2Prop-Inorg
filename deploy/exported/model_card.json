@@ -1,5 +1,5 @@
 {
-  "model_name": "LiteSpecNet",
+  "model_name": "MultiScaleSpecNet",
   "task": "chemical_family_classification",
   "input_shape": [
     1,
@@ -30,9 +30,9 @@
     "smoothing": true,
     "normalization": "max"
   },
-  "parameter_count": 6553,
-  "model_size_mb": 0.026,
-  "export_date": "2026-06-26T21:17:29.908366",
+  "parameter_count": 230241,
+  "model_size_mb": 0.88,
+  "export_date": "2026-06-27T21:16:20.953601",
   "limitations": [
     "Trained on RRUFF Raman spectra only",
     "Screening-level prediction, not experimental confirmation",
