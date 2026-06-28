@@ -1,22 +1,25 @@
 import sys
 import os
-from fastapi import FastAPI, HTTPException, Query
+import io
+import pandas as pd
+import numpy as np
+from fastapi import FastAPI, HTTPException, Query, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if PROJECT_ROOT not in sys.path: sys.path.insert(0, PROJECT_ROOT)
 
-from app.backend.config import CORS_ORIGINS
+from app.backend.config import CORS_ORIGINS, RAMAN_WN_MIN, RAMAN_WN_MAX, RAMAN_N_POINTS
 from app.backend.schemas import (
     HealthResponse, SampleListResponse, SampleSummary,
     SampleDetailResponse, SpectrumData,
     InferenceRequest, InferenceResponse, TopKPrediction,
-    RandomSampleResponse,
+    RandomSampleResponse, CustomInferenceResponse,
 )
 from app.backend.sample_loader import SampleLoader
 from app.backend.model_loader import ModelLoader
-from app.backend.inference import run_inference
+from app.backend.inference import run_inference, run_custom_inference
 
 sample_loader = SampleLoader()
 model_loader = ModelLoader()
@@ -81,3 +84,65 @@ async def random_sample():
     sample = sample_loader.get_random_sample()
     if sample is None: raise HTTPException(status_code=500, detail="No valid samples")
     return RandomSampleResponse(sample=SampleSummary(**sample))
+
+@app.post("/api/upload-infer", response_model=CustomInferenceResponse)
+async def upload_infer(file: UploadFile = File(...)):
+    if not model_loader.is_loaded: raise HTTPException(status_code=503, detail="Model not loaded")
+    
+    try:
+        contents = await file.read()
+        
+        # Try to parse the file
+        if file.filename.endswith('.csv') or file.filename.endswith('.txt'):
+            try:
+                # Attempt comma separated
+                df = pd.read_csv(io.BytesIO(contents), header=None)
+                if df.shape[1] < 2:
+                    # Attempt tab or space separated
+                    df = pd.read_csv(io.BytesIO(contents), header=None, delim_whitespace=True)
+            except Exception as e:
+                raise HTTPException(status_code=400, detail=f"Failed to parse CSV/TXT: {str(e)}")
+        else:
+            raise HTTPException(status_code=400, detail="Only .csv and .txt files are supported")
+            
+        if df.shape[1] < 2:
+            raise HTTPException(status_code=400, detail="File must have at least two columns: wavenumber and intensity")
+
+        # Assume col 0 is x (wavenumber) and col 1 is y (intensity)
+        x_raw = pd.to_numeric(df.iloc[:, 0], errors='coerce').dropna().values
+        y_raw = pd.to_numeric(df.iloc[:, 1], errors='coerce').dropna().values
+        
+        if len(x_raw) == 0 or len(y_raw) == 0:
+            raise HTTPException(status_code=400, detail="No numeric data found in file")
+
+        # Sort by x
+        sort_idx = np.argsort(x_raw)
+        x_raw = x_raw[sort_idx]
+        y_raw = y_raw[sort_idx]
+
+        # Interpolate to standard grid
+        x_target = np.linspace(RAMAN_WN_MIN, RAMAN_WN_MAX, RAMAN_N_POINTS)
+        y_interp = np.interp(x_target, x_raw, y_raw)
+        
+        # Extract features and run inference
+        result = run_custom_inference(y_interp, model_loader, filename=file.filename)
+        
+        if result is None: raise HTTPException(status_code=500, detail="Inference failed")
+        if "error" in result: raise HTTPException(status_code=400, detail=result["error"])
+        
+        raman_spectrum = SpectrumData(
+            x=x_target.tolist(),
+            y=y_interp.tolist(),
+            x_label="Raman Shift (cm⁻¹)",
+            y_label="Intensity (a.u.)"
+        )
+        
+        return CustomInferenceResponse(
+            inference_result=InferenceResponse(**result),
+            raman_spectrum=raman_spectrum
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing upload: {str(e)}")

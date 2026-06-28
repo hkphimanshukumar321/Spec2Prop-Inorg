@@ -6,6 +6,7 @@ export default function SampleSelector({
   selectedSample, 
   onSelectSample, 
   onRandomSample, 
+  onUploadSample,
   revealLabel, 
   setRevealLabel,
   disabled,
@@ -64,6 +65,29 @@ export default function SampleSelector({
               Random
             </button>
           </div>
+        </div>
+
+        <div className="pt-2">
+          <label className="block text-sm font-medium text-slate-400 mb-1">Or Upload Custom Data</label>
+          <div className="flex gap-2 items-center">
+            <input 
+              type="file" 
+              accept=".csv,.txt"
+              onChange={(e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                  onUploadSample(e.target.files[0]);
+                }
+              }}
+              disabled={disabled || isStaticMode}
+              className="flex-1 block w-full text-sm text-slate-400
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-lg file:border-0
+                file:text-sm file:font-semibold
+                file:bg-blue-600 file:text-white
+                hover:file:bg-blue-500 cursor-pointer disabled:opacity-50"
+            />
+          </div>
+          {isStaticMode && <p className="text-xs text-slate-500 mt-1">Upload disabled in static demo mode.</p>}
         </div>
 
         {selectedSample && (

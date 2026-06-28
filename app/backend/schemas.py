@@ -76,12 +76,12 @@ class InferenceResponse(BaseModel):
     # 5-class Broad Group
     predicted_5class_label: str
     predicted_5class_confidence: float
-    is_correct_5class: bool
+    is_correct_5class: Optional[bool] = None
     
     # 9-class Fine Candidates
     predicted_9class_label: str
     predicted_9class_confidence: float
-    is_correct_9class: bool
+    is_correct_9class: Optional[bool] = None
     top3_9class: List[TopKPrediction]
     
     prediction_quality: str
@@ -93,3 +93,7 @@ class InferenceResponse(BaseModel):
 
 class RandomSampleResponse(BaseModel):
     sample: SampleSummary
+
+class CustomInferenceResponse(BaseModel):
+    inference_result: InferenceResponse
+    raman_spectrum: SpectrumData

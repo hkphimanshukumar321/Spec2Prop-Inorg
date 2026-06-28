@@ -13,3 +13,13 @@ export const getSampleDetails = (sampleId) => api.get(`/sample/${sampleId}`).the
 export const getRandomSample = () => api.get('/random-sample').then(res => res.data);
 
 export const runInference = (data) => api.post('/infer', data).then(res => res.data);
+
+export const uploadCustomSample = (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return api.post('/upload-infer', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }).then(res => res.data);
+};

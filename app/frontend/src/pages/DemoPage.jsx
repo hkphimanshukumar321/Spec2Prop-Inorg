@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { getSamples, getRandomSample, getSampleDetails, runInference } from '../api/client';
+import { getSamples, getRandomSample, getSampleDetails, runInference, uploadCustomSample } from '../api/client';
 import SampleSelector from '../components/SampleSelector';
 import MachineScanSimulation from '../components/MachineScanSimulation';
 import SpectrumViewer from '../components/SpectrumViewer';
@@ -8,6 +8,7 @@ import PredictionReport from '../components/PredictionReport';
 
 export default function DemoPage() {
   const [isStaticMode, setIsStaticMode] = useState(false);
+  const [isCustomUpload, setIsCustomUpload] = useState(false);
   const [samples, setSamples] = useState([]);
   const [selectedSample, setSelectedSample] = useState(null);
   const [sampleDetails, setSampleDetails] = useState(null);
@@ -42,6 +43,7 @@ export default function DemoPage() {
 
   const handleSelectSample = async (sample) => {
     setSelectedSample(sample);
+    setIsCustomUpload(false);
     setSampleDetails(null);
     setInferenceResult(null);
     setPendingStaticResult(null);
@@ -82,6 +84,34 @@ export default function DemoPage() {
     }
   };
 
+  const handleUploadSample = async (file) => {
+    setSelectedSample({
+      sample_id: 'Custom Upload',
+      mineral_name: file.name,
+      has_raman: true,
+      has_xrd: false,
+      original_12class_label: 'Unknown',
+      true_5class_label: 'Unknown'
+    });
+    setIsCustomUpload(true);
+    setSampleDetails(null);
+    setInferenceResult(null);
+    setPendingStaticResult(null);
+    setRevealLabel(false);
+    setError(null);
+    
+    try {
+      // The upload API performs both interpolation and inference at once.
+      // We store the inference result in pending, to reveal after the scan animation.
+      const res = await uploadCustomSample(file);
+      setSampleDetails({ raman_spectrum: res.raman_spectrum });
+      setPendingStaticResult(res.inference_result);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'File upload failed.');
+      setSelectedSample(null);
+    }
+  };
+
   const startScan = () => {
     if (!selectedSample) return;
     setIsScanning(true);
@@ -95,7 +125,7 @@ export default function DemoPage() {
     try {
       await new Promise(r => setTimeout(r, 600)); // UI delay
       
-      if (!isStaticMode) {
+      if (!isStaticMode && !isCustomUpload) {
         const result = await runInference({
           sample_id: selectedSample.sample_id,
           task: 'family',
@@ -103,7 +133,7 @@ export default function DemoPage() {
         });
         setInferenceResult(result);
       } else {
-        // If static mode, populate inferenceResult from the pending payload
+        // If static mode or custom upload, populate inferenceResult from the pending payload
         setInferenceResult(pendingStaticResult);
       }
     } catch (err) {
@@ -115,6 +145,7 @@ export default function DemoPage() {
 
   const resetFlow = () => {
     setSelectedSample(null);
+    setIsCustomUpload(false);
     setSampleDetails(null);
     setInferenceResult(null);
     setRevealLabel(false);
@@ -151,6 +182,7 @@ export default function DemoPage() {
             selectedSample={selectedSample}
             onSelectSample={handleSelectSample}
             onRandomSample={handleRandomSample}
+            onUploadSample={handleUploadSample}
             revealLabel={revealLabel}
             setRevealLabel={setRevealLabel}
             disabled={isScanning || isInferring}
