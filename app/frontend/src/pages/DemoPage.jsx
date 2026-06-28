@@ -31,7 +31,7 @@ export default function DemoPage() {
         // Fallback to static mode
         setIsStaticMode(true);
         try {
-          const res = await axios.get('/demo_samples/index.json');
+          const res = await axios.get(`${import.meta.env.BASE_URL}demo_samples/index.json`);
           setSamples(res.data.samples);
         } catch (err) {
           setError('Failed to load live backend and no static demo files found.');
@@ -48,7 +48,7 @@ export default function DemoPage() {
     
     try {
       if (isStaticMode) {
-        const res = await axios.get(`/demo_samples/${sample.sample_id}.json`);
+        const res = await axios.get(`${import.meta.env.BASE_URL}demo_samples/${sample.sample_id}.json`);
         setSampleDetails({
           raman_spectrum: {
             x: res.data.processed_raman_x,
