@@ -16,6 +16,7 @@ export default function DemoPage() {
   const [isInferring, setIsInferring] = useState(false);
   
   const [inferenceResult, setInferenceResult] = useState(null);
+  const [pendingStaticResult, setPendingStaticResult] = useState(null);
   const [revealLabel, setRevealLabel] = useState(false);
   
   const [error, setError] = useState(null);
@@ -43,6 +44,7 @@ export default function DemoPage() {
     setSelectedSample(sample);
     setSampleDetails(null);
     setInferenceResult(null);
+    setPendingStaticResult(null);
     setRevealLabel(false);
     setError(null);
     
@@ -55,8 +57,8 @@ export default function DemoPage() {
             y: res.data.processed_raman_y
           }
         });
-        // Pre-store static result
-        setInferenceResult(res.data);
+        // Store in pending until user hits Start Scan
+        setPendingStaticResult(res.data);
       } else {
         const details = await getSampleDetails(sample.sample_id);
         setSampleDetails(details);
@@ -83,9 +85,7 @@ export default function DemoPage() {
   const startScan = () => {
     if (!selectedSample) return;
     setIsScanning(true);
-    if (!isStaticMode) {
-      setInferenceResult(null); // Only clear in live mode, static pre-loaded it
-    }
+    setInferenceResult(null);
   };
 
   const onScanComplete = async () => {
@@ -102,8 +102,10 @@ export default function DemoPage() {
           modality: 'raman'
         });
         setInferenceResult(result);
+      } else {
+        // If static mode, populate inferenceResult from the pending payload
+        setInferenceResult(pendingStaticResult);
       }
-      // If static mode, inferenceResult is already populated from the JSON
     } catch (err) {
       setError(err.response?.data?.detail || 'Inference failed.');
     } finally {
@@ -163,9 +165,9 @@ export default function DemoPage() {
           <div className="mt-auto pt-6 flex flex-col gap-3">
             <button
               onClick={startScan}
-              disabled={!selectedSample || isScanning || isInferring || (inferenceResult && !isStaticMode) || (inferenceResult && !isScanning && !isInferring && isStaticMode && revealLabel)}
+              disabled={!selectedSample || isScanning || isInferring || inferenceResult !== null}
               className={`w-full py-3 rounded-lg font-bold shadow-lg transition-all ${
-                !selectedSample || isScanning || isInferring || (inferenceResult && !isStaticMode)
+                !selectedSample || isScanning || isInferring || inferenceResult !== null
                   ? 'bg-slate-700 text-slate-500 cursor-not-allowed shadow-none'
                   : 'bg-blue-600 hover:bg-blue-500 text-white hover:shadow-blue-500/25 active:scale-95'
               }`}
