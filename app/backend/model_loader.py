@@ -98,7 +98,7 @@ class ModelLoader:
                 self.num_classes = 9
 
             self._loaded = True
-            print(f"[ModelLoader] ✓ Model pipeline ready ({self.model_name})")
+            print(f"[ModelLoader] OK - Model pipeline ready ({self.model_name})")
             return True
 
         except Exception as e:
