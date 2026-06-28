@@ -27,8 +27,6 @@ Spec2Prop-Edge is the deployment module for the Spec2Prop-InorgBench project. It
 ## Supported Devices
 
 - ✅ **Laptop/Workstation CPU** — tested and benchmarked
-- 🔲 **Raspberry Pi 5-class CPU** — architecture supports it, not yet benchmarked
-- 🔲 **NVIDIA Jetson Nano/Orin Nano** — architecture supports it, not yet benchmarked
 
 ## Input Formats
 

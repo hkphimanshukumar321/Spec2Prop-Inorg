@@ -127,6 +127,84 @@ def _subsample_features(spectrum: np.ndarray, n_out: int = 64) -> np.ndarray:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Derivative features (first and second derivative statistics)
+# ─────────────────────────────────────────────────────────────────────────────
+def _derivative_features(spectrum: np.ndarray) -> np.ndarray:
+    """
+    Statistics of first and second derivatives.
+    Captures peak sharpness, inflection density, and spectral roughness.
+    Returns 12 features: [d1_mean, d1_std, d1_max, d1_min, d1_zcr, d1_energy,
+                          d2_mean, d2_std, d2_max, d2_min, d2_zcr, d2_energy]
+    """
+    d1 = np.diff(spectrum)
+    d2 = np.diff(d1)
+
+    def _stats(d):
+        zcr = np.sum(np.diff(np.sign(d)) != 0) / (len(d) + 1e-8)  # zero-crossing rate
+        energy = np.sum(d ** 2) / (len(d) + 1e-8)
+        return np.array([np.mean(d), np.std(d) + 1e-8, np.max(d), np.min(d), zcr, energy])
+
+    return np.concatenate([_stats(d1), _stats(d2)])  # 12 features
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Spectral entropy
+# ─────────────────────────────────────────────────────────────────────────────
+def _spectral_entropy(spectrum: np.ndarray) -> np.ndarray:
+    """Shannon entropy of the normalised intensity distribution. 1 feature."""
+    s = np.abs(spectrum) + 1e-12
+    p = s / s.sum()
+    entropy = -np.sum(p * np.log(p))
+    return np.array([entropy])
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Per-band peak count and integrated area
+# ─────────────────────────────────────────────────────────────────────────────
+def _band_peak_count_and_area(spectrum: np.ndarray) -> np.ndarray:
+    """
+    For each diagnostic band window:
+      - count of local maxima within the band
+      - integrated (summed) area within the band
+    Returns 14 features: 7 counts + 7 areas.
+    """
+    n = len(spectrum)
+    all_peaks, _ = find_peaks(spectrum, height=0.01, prominence=0.01, distance=5)
+    all_peaks_set = set(all_peaks)
+
+    counts = []
+    areas = []
+    for name, (lo, hi) in _BAND_WINDOWS.items():
+        i_lo = min(max(int(lo * n / 2048), 0), n - 1)
+        i_hi = min(max(int(hi * n / 2048), 1), n)
+        # Count peaks in this band
+        band_peak_count = sum(1 for p in all_peaks_set if i_lo <= p < i_hi)
+        counts.append(float(band_peak_count))
+        # Integrated area
+        areas.append(float(spectrum[i_lo:i_hi].sum()))
+
+    return np.concatenate([np.array(counts), np.array(areas)])  # 14 features
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Peak prominence features
+# ─────────────────────────────────────────────────────────────────────────────
+def _peak_prominence_features(spectrum: np.ndarray, n_peaks: int = 10) -> np.ndarray:
+    """
+    Prominence values of top-N peaks (sorted by prominence).
+    Returns n_peaks features, zero-padded.
+    """
+    peaks, props = find_peaks(spectrum, height=0.01, prominence=0.01, distance=10)
+    if len(peaks) == 0:
+        return np.zeros(n_peaks)
+    proms = props["prominences"]
+    proms_sorted = np.sort(proms)[::-1][:n_peaks]
+    out = np.zeros(n_peaks)
+    out[:len(proms_sorted)] = proms_sorted
+    return out
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Public API
 # ─────────────────────────────────────────────────────────────────────────────
 def extract_domain_features(spectra: np.ndarray, n_peaks: int = 10) -> np.ndarray:
@@ -141,7 +219,8 @@ def extract_domain_features(spectra: np.ndarray, n_peaks: int = 10) -> np.ndarra
     Returns
     -------
     features : (N, F) numpy array
-        F = 3*n_peaks + 4 + 28 + 64 = 126 (default n_peaks=10)
+        F = 3*n_peaks + 4 + 28 + 64 + 12 + 1 + 14 + n_peaks
+          = 30 + 4 + 28 + 64 + 12 + 1 + 14 + 10 = 163 (default n_peaks=10)
     """
     # Normalise each spectrum to [0, 1] before feature extraction
     s_norm = spectra - spectra.min(axis=1, keepdims=True)
@@ -153,10 +232,14 @@ def extract_domain_features(spectra: np.ndarray, n_peaks: int = 10) -> np.ndarra
     for i in range(len(s_norm)):
         s = s_norm[i]
         row = np.concatenate([
-            _peak_features(s, n_peaks),       # 30
-            _moment_features(s),               #  4
-            _band_features(s),                 # 28
-            _subsample_features(s, 64),        # 64
+            _peak_features(s, n_peaks),            # 30
+            _moment_features(s),                    #  4
+            _band_features(s),                      # 28
+            _subsample_features(s, 64),             # 64
+            _derivative_features(s),                # 12
+            _spectral_entropy(s),                   #  1
+            _band_peak_count_and_area(s),           # 14
+            _peak_prominence_features(s, n_peaks),  # 10
         ])
         rows.append(row)
 

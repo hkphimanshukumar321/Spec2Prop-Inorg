@@ -7,6 +7,7 @@ Formats inference results into JSON, CSV, and Markdown reports.
 import json
 import os
 from datetime import datetime
+import yaml
 
 import pandas as pd
 
@@ -48,6 +49,20 @@ def generate_report(
     predictions["timestamp"] = datetime.now().isoformat()
     predictions["disclaimer"] = DISCLAIMER
 
+    # Enforce 5-class coarse mapping if family task
+    if predictions.get("task") == "family" and "top_predictions" in predictions and len(predictions["top_predictions"]) > 0:
+        try:
+            config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "configs", "label_mappings.yaml")
+            with open(config_path, 'r') as f:
+                mappings = yaml.safe_load(f)
+            fine_to_coarse = mappings.get("fine_9_to_coarse_5", {})
+            display_names = mappings.get("display_names", {}).get("coarse_5", {})
+            top_class = predictions["top_predictions"][0].get("class", "")
+            coarse = fine_to_coarse.get(top_class, "Other/Rare")
+            predictions["predicted_coarse_family"] = display_names.get(coarse, coarse)
+        except Exception:
+            pass
+
     paths = {}
 
     # JSON
@@ -82,10 +97,13 @@ def generate_report(
         f"# Spec2Prop-Edge Prediction Report",
         f"",
         f"**Sample**: {predictions.get('sample_id', 'unknown')}",
+        f"**RRUFF ID**: {predictions.get('rruff_id', 'unknown')}",
+        f"**Mineral Name**: {predictions.get('mineral_name', 'unknown')}",
         f"**Task**: {predictions.get('task', '')}",
         f"**Model**: {predictions.get('model_name', '')}",
         f"**Device**: {predictions.get('device', '')}",
         f"**Inference Time**: {predictions.get('inference_time_ms', 0):.2f} ms",
+        f"**Prediction Quality**: {predictions.get('quality', 'unknown')}",
         f"**Timestamp**: {predictions.get('timestamp', '')}",
         f"",
         f"## Predictions",
@@ -97,7 +115,7 @@ def generate_report(
         md_lines.append(f"| {p.get('rank', '')} | {p.get('class', '')} | {p.get('confidence', 0):.4f} |")
 
     # Task-specific fields
-    for field in ["predicted_family", "predicted_band_gap_class",
+    for field in ["predicted_coarse_family", "predicted_family", "predicted_band_gap_class",
                    "predicted_is_metal", "predicted_formation_energy_class"]:
         if field in predictions:
             md_lines.append(f"\n**{field.replace('_', ' ').title()}**: {predictions[field]}")

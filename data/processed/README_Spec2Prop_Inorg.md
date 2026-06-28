@@ -5,9 +5,12 @@ The objective of this project is to provide a lightweight, open-data CNN framewo
 
 ## Source Datasets
 This is a derived/processed benchmark dataset created from open scientific datasets. It does not claim ownership over the original source datasets. The underlying datasets include:
-- **RRUFF Database**: Provides open Raman and XRD spectra for minerals.
+- **RRUFF Database**: The main Raman/XRD mineral training backbone. Provides open Raman and XRD spectra for minerals.
 - **Matbench**: Provides computed material properties (band gap, formation energy, metallicity) from the Materials Project.
-- **tmQM / tmQMg**: Datasets containing organometallic and transition metal complexes.
+- **MLROD**: An auxiliary Raman resource.
+- **tmQM / tmQMg**: Optional coordination chemistry resources containing organometallic and transition metal complexes, not the main training backbone.
+
+*Note on COD (Crystallography Open Database)*: COD was considered but deferred because it mainly provides CIF crystal structures, not directly paired Raman spectra. COD may be used in future v2 for simulated XRD or structural descriptors.
 
 ## Created Subsets
 The preprocessing pipeline produces the following subsets to accommodate different experimental setups:

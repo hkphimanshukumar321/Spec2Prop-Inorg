@@ -157,6 +157,20 @@ def validate(
         _check(len(limitations) > 0, "Model card has no listed limitations")
         has_screening = any("screening" in l.lower() for l in limitations)
         _check(has_screening, "Model card must include 'screening-level' disclaimer")
+        
+        has_decision = any("decision-support" in l.lower() for l in limitations)
+        _check(has_decision, "Model card must include 'decision-support' language")
+        
+    # Check READMEs for forbidden words
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    forbidden_words = ["final identification", "perfect classification", "replaces scientist", "fully automated"]
+    for readme in ["README.md", "README_DEPLOYMENT.md"]:
+        path = os.path.join(project_root, readme)
+        if os.path.isfile(path):
+            with open(path, "r", encoding="utf-8") as f:
+                content = f.read().lower()
+                for word in forbidden_words:
+                    _check(word not in content, f"Forbidden term '{word}' found in {readme}")
 
     # Device honesty check
     if benchmark_device:

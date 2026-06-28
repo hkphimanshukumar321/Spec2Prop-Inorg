@@ -133,6 +133,7 @@ def export_family_model(
             "Trained on RRUFF Raman spectra only",
             "Screening-level prediction, not experimental confirmation",
             "Performance may degrade on spectra from different instruments or preprocessing",
+            "This is a screening-level decision-support tool, not a final identification method."
         ]
     }
     card_path = os.path.join(output_dir, "model_card.json")

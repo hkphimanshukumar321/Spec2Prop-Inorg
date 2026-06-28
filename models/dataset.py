@@ -35,11 +35,12 @@ DESCRIPTOR_FLOAT_COLS = [
     "avg_atomic_mass",
 ]
 
-# Rare families to merge into "Other/Rare" for model training (v1)
-RARE_FAMILIES = {"Carbide", "Intermetallic/Alloy", "Telluride/Selenide", "Elemental/Native"}
+import yaml
 
-# Minimum class threshold — families below this are merged
-MIN_FAMILY_SIZE = 20
+def get_label_mappings():
+    config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "configs", "label_mappings.yaml")
+    with open(config_path, 'r') as f:
+        return yaml.safe_load(f)
 
 
 # ---------------------------------------------------------------------------
@@ -103,13 +104,13 @@ def get_descriptor_dim(family_encoder: Optional[Dict] = None) -> int:
 # ---------------------------------------------------------------------------
 
 def add_model_family_column(df: pd.DataFrame) -> pd.DataFrame:
-    """Add chemical_family_model column, merging rare families into Other/Rare."""
+    """Add chemical_family_model column using official 9-class mapping."""
     df = df.copy()
     df["chemical_family_original"] = df["chemical_family"].copy()
-    counts = df["chemical_family"].value_counts()
-    rare = set(counts[counts < MIN_FAMILY_SIZE].index) | RARE_FAMILIES
+    mappings = get_label_mappings()
+    mapping_dict = mappings.get("original_to_fine_9", {})
     df["chemical_family_model"] = df["chemical_family"].apply(
-        lambda x: "Other/Rare" if x in rare else x
+        lambda x: mapping_dict.get(x, "Other/Rare")
     )
     return df
 

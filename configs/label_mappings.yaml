@@ -1,0 +1,70 @@
+original_12_labels:
+  - Silicate
+  - Oxide
+  - Sulfate
+  - Phosphate
+  - Sulfide
+  - Halide
+  - Carbonate
+  - Borate
+  - Elemental/Native
+  - Telluride/Selenide
+  - Intermetallic/Alloy
+  - Carbide
+
+fine_9_labels:
+  - Silicate
+  - Oxide
+  - Sulfate
+  - Phosphate
+  - Sulfide
+  - Halide
+  - Carbonate
+  - Borate
+  - Other/Rare
+
+coarse_5_labels:
+  - Silicate
+  - Oxide
+  - Oxyanion Group
+  - Sulfide/Halide Group
+  - Other/Rare
+
+original_to_fine_9:
+  Silicate: Silicate
+  Oxide: Oxide
+  Sulfate: Sulfate
+  Phosphate: Phosphate
+  Sulfide: Sulfide
+  Halide: Halide
+  Carbonate: Carbonate
+  Borate: Borate
+  Elemental/Native: Other/Rare
+  Telluride/Selenide: Other/Rare
+  Intermetallic/Alloy: Other/Rare
+  Carbide: Other/Rare
+
+original_to_coarse_5:
+  Silicate: Silicate
+  Oxide: Oxide
+  Sulfate: Oxyanion Group
+  Phosphate: Oxyanion Group
+  Carbonate: Oxyanion Group
+  Borate: Oxyanion Group
+  Sulfide: Sulfide/Halide Group
+  Halide: Sulfide/Halide Group
+  Telluride/Selenide: Sulfide/Halide Group
+  Elemental/Native: Other/Rare
+  Intermetallic/Alloy: Other/Rare
+  Carbide: Other/Rare
+
+fine_9_to_coarse_5:
+  Silicate: Silicate
+  Oxide: Oxide
+  Sulfate: Oxyanion Group
+  Phosphate: Oxyanion Group
+  Carbonate: Oxyanion Group
+  Borate: Oxyanion Group
+  Sulfide: Sulfide/Halide Group
+  Halide: Sulfide/Halide Group
+  Other/Rare: Other/Rare
