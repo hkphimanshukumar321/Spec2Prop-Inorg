@@ -1,0 +1,562 @@
+% references_spec2prop_relevant_50.bib
+% Curated for Spec2Prop-InorgBench / Spec2Prop-Edge paper.
+% Scope: Raman/XRD spectroscopy, inorganic materials informatics, datasets, preprocessing, LightGBM-DART and ML baselines.
+% No placeholder Author A/B/C entries are included.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% A. Project dataset and open spectral/materials databases
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@misc{kumar2026spec2prop,
+  author       = {Kumar, Himanshu and Amrita, Kumari},
+  title        = {Spec2Prop-InorgBench},
+  year         = {2026},
+  publisher    = {Kaggle},
+  doi          = {10.34740/KAGGLE/DSV/17271313},
+  url          = {https://www.kaggle.com/dsv/17271313}
+}
+
+@incollection{lafuente2015rruff,
+  author    = {Lafuente, Barbara and Downs, Robert T. and Yang, Hexiong and Stone, Nate},
+  title     = {The Power of Databases: The {RRUFF} Project},
+  booktitle = {Highlights in Mineralogical Crystallography},
+  publisher = {De Gruyter},
+  year      = {2015},
+  pages     = {1--30}
+}
+
+@inproceedings{downs2006rruff,
+  author    = {Downs, Robert T.},
+  title     = {The {RRUFF} Project: An Integrated Study of the Chemistry, Crystallography, {Raman} and Infrared Spectroscopy of Minerals},
+  booktitle = {Program and Abstracts of the 19th General Meeting of the International Mineralogical Association},
+  year      = {2006},
+  pages     = {O03--13}
+}
+
+@article{grazulis2009cod,
+  author  = {Gra{\v{z}}ulis, Saulius and Chateigner, Daniel and Downs, Robert T. and Yokochi, A. F. T. and Quir{\'o}s, Miguel and Lutterotti, Luca and Manakova, Elena and Butkus, Justas and Moeck, Peter and Le Bail, Armel},
+  title   = {Crystallography Open Database -- an Open-Access Collection of Crystal Structures},
+  journal = {Journal of Applied Crystallography},
+  year    = {2009},
+  volume  = {42},
+  pages   = {726--729},
+  doi     = {10.1107/S0021889809016690}
+}
+
+@article{grazulis2012cod,
+  author  = {Gra{\v{z}}ulis, Saulius and Daskevi{\v{c}}, Andrius and Merkys, Andrius and Chateigner, Daniel and Lutterotti, Luca and Quir{\'o}s, Miguel and Serebryanaya, Natalia R. and Moeck, Peter and Downs, Robert T. and Le Bail, Armel},
+  title   = {Crystallography Open Database ({COD}): An Open-Access Collection of Crystal Structures and Platform for World-Wide Collaboration},
+  journal = {Nucleic Acids Research},
+  year    = {2012},
+  volume  = {40},
+  number  = {D1},
+  pages   = {D420--D427},
+  doi     = {10.1093/nar/gkr900}
+}
+
+@article{jain2013materialsproject,
+  author  = {Jain, Anubhav and Ong, Shyue Ping and Hautier, Geoffroy and Chen, Wei and Richards, William Davidson and Dacek, Stephen and Cholia, Shreyas and Gunter, Dan and Skinner, David and Ceder, Gerbrand and Persson, Kristin A.},
+  title   = {Commentary: The Materials Project: A Materials Genome Approach to Accelerating Materials Innovation},
+  journal = {APL Materials},
+  year    = {2013},
+  volume  = {1},
+  number  = {1},
+  pages   = {011002},
+  doi     = {10.1063/1.4812323}
+}
+
+@article{dunn2020matbench,
+  author  = {Dunn, Alexander and Wang, Qi and Ganose, Alex and Dopp, Daniel and Jain, Anubhav},
+  title   = {Benchmarking Materials Property Prediction Methods: The {Matbench} Test Set and {Automatminer} Reference Algorithm},
+  journal = {npj Computational Materials},
+  year    = {2020},
+  volume  = {6},
+  pages   = {138},
+  doi     = {10.1038/s41524-020-00406-3}
+}
+
+@article{ward2018matminer,
+  author  = {Ward, Logan and Dunn, Alexander and Faghaninia, Alireza and Zimmermann, Nils E. R. and Bajaj, Saurabh and Wang, Qi and Montoya, Joseph and Chen, Jiming and Bystrom, Kyle and Dylla, Maxwell and Chard, Kyle and Asta, Mark and Persson, Kristin and Snyder, Glen Jeffrey and Foster, Ian and Jain, Anubhav},
+  title   = {{Matminer}: An Open Source Toolkit for Materials Data Mining},
+  journal = {Computational Materials Science},
+  year    = {2018},
+  volume  = {152},
+  pages   = {60--69},
+  doi     = {10.1016/j.commatsci.2018.05.018}
+}
+
+@article{choudhary2020jarvis,
+  author  = {Choudhary, Kamal and Garrity, Kevin F. and Reid, Andrew C. E. and DeCost, Brian and Biacchi, Adam J. and Hight Walker, Angela R. and Trautt, Zachary and Hattrick-Simpers, Jason and Kusne, Aaron Gilad and Centrone, Andrea and Davydov, Albert and Jiang, Jie and Pachter, Ruth and Cheon, Gowoon and Reed, Evan and Agrawal, Ankit and Qian, Xiaofeng and Sharma, Vishu and Zhuang, Houlong L. and Kalish, Ira and Sivaraman, Ganesh and Cross, Nina and Dacek, Stephen and Sorensen, Christina and Green, Martin L. and Persson, Kristin A. and Ceder, Gerbrand and Tavazza, Francesca},
+  title   = {The Joint Automated Repository for Various Integrated Simulations ({JARVIS}) for Data-Driven Materials Design},
+  journal = {npj Computational Materials},
+  year    = {2020},
+  volume  = {6},
+  pages   = {173},
+  doi     = {10.1038/s41524-020-00440-1}
+}
+
+@article{riebesell2025matbenchdiscovery,
+  author  = {Riebesell, Janosh and Goodall, Rhys E. A. and Benner, Philipp and Chiang, Yuan and Deng, Bowen and Ceder, Gerbrand and Asta, Mark and Lee, Alpha A. and Jain, Anubhav and Persson, Kristin A.},
+  title   = {A Framework to Evaluate Machine Learning Crystal Stability Predictions},
+  journal = {Nature Machine Intelligence},
+  year    = {2025}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% B. Raman spectroscopy, spectroscopy ML, mineral/material identification
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@article{dai2024libsraman,
+  author  = {Dai, Yujia and Liu, Ziyuan and Zhao, Shangyong},
+  title   = {Fusion of Laser-Induced Breakdown Spectroscopy and {Raman} Spectroscopy for Mineral Identification Based on Machine Learning},
+  journal = {Molecules},
+  year    = {2024},
+  volume  = {29},
+  number  = {14},
+  pages   = {3317},
+  doi     = {10.3390/molecules29143317}
+}
+
+@article{liu2026ramanclassificationreview,
+  author  = {Liu, Y. and others},
+  title   = {Recent Advances in {Raman} Spectral Classification with Machine Learning},
+  journal = {Sensors},
+  year    = {2026},
+  volume  = {26},
+  number  = {1},
+  pages   = {341},
+  doi     = {10.3390/s26010341}
+}
+
+@article{eranti2026ramanencoder,
+  author  = {Eranti, Abhiraam and Tewari, Yogesh and Palacios, Rafael and Gupta, Amar},
+  title   = {{Raman} Spectroscopy Pre-Trained Encoder: A Self-Supervised Learning Approach for Data-Efficient Domain-Independent Spectroscopy Analysis},
+  journal = {IEEE Access},
+  year    = {2026},
+  volume  = {14},
+  pages   = {40311--40327}
+}
+
+@article{zhang2026physramannet,
+  author  = {Zhang, Yilong and Sun, Jun and Zhao, Dandan and Lu, Tao and Liang, Rui and Sun, Hao and Liu, Bo and Wang, Han and Zhang, Hong and Chen, Peng},
+  title   = {{PhysRaman-Net}: A Physics-Informed Neural Network for Cross-Device {Raman} Spectral Analysis},
+  journal = {IEEE Photonics Journal},
+  year    = {2026},
+  volume  = {18},
+  pages   = {1--10}
+}
+
+@article{sineesh2026ramanbenchmark,
+  author  = {Sineesh, Adithya and Kamsali, Akshita},
+  title   = {Benchmarking Deep Learning Models for {Raman} Spectroscopy Across Open-Source Datasets},
+  journal = {Digital Discovery},
+  year    = {2026},
+  doi     = {10.1039/D6DD00044D}
+}
+
+@article{smith2025uraniumraman,
+  author  = {Smith, R. and others},
+  title   = {Interpretable Machine Learning Models Classify Minerals by {Raman} Spectra},
+  journal = {Scientific Reports},
+  year    = {2025}
+}
+
+@misc{jahoda2020multispectralminerals,
+  author       = {Jahoda, Pavel and Drozdovskiy, Igor and Sauro, Francesco and Turchi, Leonardo and Payler, Samuel and Bessone, Loredana},
+  title        = {Machine Learning for Recognition of Minerals from Multispectral Data},
+  year         = {2020},
+  eprint       = {2005.14324},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.LG}
+}
+
+@book{nakamoto2009infraredraman,
+  author    = {Nakamoto, Kazuo},
+  title     = {Infrared and {Raman} Spectra of Inorganic and Coordination Compounds},
+  edition   = {6},
+  publisher = {Wiley},
+  year      = {2009}
+}
+
+@book{farmer1974minerals,
+  editor    = {Farmer, V. C.},
+  title     = {The Infrared Spectra of Minerals},
+  publisher = {Mineralogical Society},
+  year      = {1974}
+}
+
+@article{mcmillan1984ramanglasses,
+  author  = {McMillan, Paul},
+  title   = {A {Raman} Spectroscopic Study of Glasses in the System {CaO--MgO--Al2O3--SiO2}},
+  journal = {American Mineralogist},
+  year    = {1984},
+  volume  = {69},
+  pages   = {622--644}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% C. XRD, diffraction benchmarks, and XRD machine learning
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@article{rincon2025simpod,
+  author  = {Rinc{\'o}n, Santiago and Gonz{\'a}lez, Germ{\'a}n and Mac{\'i}as, Miguel A. and Arbel{\'a}ez, Pablo},
+  title   = {A New Benchmark for Machine Learning Applied to Powder {X}-ray Diffraction},
+  journal = {Scientific Data},
+  year    = {2025},
+  volume  = {12},
+  pages   = {1186},
+  doi     = {10.1038/s41597-025-05534-3}
+}
+
+@article{guo2024xrddeeplearning,
+  author  = {Guo, Gabe and Goldfeder, Judah and Lan, Ling and Ray, Aniv and Yang, Albert Hanming and Chen, Boyuan and Billinge, Simon J. L. and Lipson, Hod},
+  title   = {Towards End-to-End Structure Determination from {X}-ray Diffraction Data Using Deep Learning},
+  journal = {npj Computational Materials},
+  year    = {2024},
+  volume  = {10},
+  pages   = {209},
+  doi     = {10.1038/s41524-024-01401-8}
+}
+
+@article{oviedo2019xrdaugmentation,
+  author  = {Oviedo, Felipe and Ren, Zekun and Sun, Shijing and Settens, Charles and Liu, Zhe and Hartono, Nicholas T. P. and Ramasamy, Sangwon and DeCost, Brian L. and Tian, Siyu I. P. and Romano, Giulia and Gilad Kusne, Aaron and Buonassisi, Tonio},
+  title   = {Fast and Interpretable Classification of Small {X}-ray Diffraction Datasets Using Data Augmentation and Deep Neural Networks},
+  journal = {npj Computational Materials},
+  year    = {2019},
+  volume  = {5},
+  pages   = {60},
+  doi     = {10.1038/s41524-019-0196-x}
+}
+
+@article{park2017xrdcnn,
+  author  = {Park, Won Bae and Chung, Jongwoo and Jung, Jieun and Sohn, Keonwook and Singh, Sanjaya P. and Pyo, Minsu and Shin, Nam-Suk and Sohn, Kee-Sun},
+  title   = {Classification of Crystal Structure Using a Convolutional Neural Network},
+  journal = {IUCrJ},
+  year    = {2017},
+  volume  = {4},
+  pages   = {486--494},
+  doi     = {10.1107/S205225251700714X}
+}
+
+@article{maffettone2021crystallographycompanion,
+  author  = {Maffettone, Phillip M. and Banko, Leslie and Cui, Peng and Lysogorskiy, Yury and Little, Max A. and Olds, Daniel and Ludwig, Alfred and Cooper, Andrew I.},
+  title   = {Crystallography Companion Agent for High-Throughput Materials Discovery},
+  journal = {Nature Computational Science},
+  year    = {2021},
+  volume  = {1},
+  pages   = {290--297},
+  doi     = {10.1038/s43588-021-00059-2}
+}
+
+@misc{guo2024pxrdnet,
+  author       = {Guo, Gabe and Saidi, Tristan and Terban, Maxwell and Valsecchi, Michele and Billinge, Simon J. L. and Lipson, Hod},
+  title        = {Ab Initio Structure Solutions from Nanocrystalline Powder Diffraction Data},
+  year         = {2024},
+  eprint       = {2406.10796},
+  archivePrefix= {arXiv},
+  primaryClass = {cond-mat.mtrl-sci}
+}
+
+@misc{li2024pxrdgen,
+  author       = {Li, Qi and Jiao, Rui and Wu, Liming and Zhu, Tiannian and Huang, Wenbing and Jin, Shifeng and Liu, Yang and Weng, Hongming and Chen, Xiaolong},
+  title        = {{PXRDGen}: Powder Diffraction Crystal Structure Determination Using Generative Models},
+  year         = {2024},
+  eprint       = {2409.04727},
+  archivePrefix= {arXiv},
+  primaryClass = {cond-mat.mtrl-sci}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% D. Materials informatics and property-prediction models
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@article{xie2018cgcnn,
+  author  = {Xie, Tian and Grossman, Jeffrey C.},
+  title   = {Crystal Graph Convolutional Neural Networks for an Accurate and Interpretable Prediction of Material Properties},
+  journal = {Physical Review Letters},
+  year    = {2018},
+  volume  = {120},
+  pages   = {145301},
+  doi     = {10.1103/PhysRevLett.120.145301}
+}
+
+@article{chen2019megnet,
+  author  = {Chen, Chi and Ye, Weike and Zuo, Yunxing and Zheng, Chen and Ong, Shyue Ping},
+  title   = {Graph Networks as a Universal Machine Learning Framework for Molecules and Crystals},
+  journal = {Chemistry of Materials},
+  year    = {2019},
+  volume  = {31},
+  number  = {9},
+  pages   = {3564--3572},
+  doi     = {10.1021/acs.chemmater.9b01294}
+}
+
+@article{choudhary2021alignn,
+  author  = {Choudhary, Kamal and DeCost, Brian},
+  title   = {Atomistic Line Graph Neural Network for Improved Materials Property Predictions},
+  journal = {npj Computational Materials},
+  year    = {2021},
+  volume  = {7},
+  pages   = {185},
+  doi     = {10.1038/s41524-021-00650-1}
+}
+
+@article{goodall2020roost,
+  author  = {Goodall, Rhys E. A. and Lee, Alpha A.},
+  title   = {Predicting Materials Properties without Crystal Structure: Deep Representation Learning from Stoichiometry},
+  journal = {Nature Communications},
+  year    = {2020},
+  volume  = {11},
+  pages   = {6280},
+  doi     = {10.1038/s41467-020-19964-7}
+}
+
+@article{wang2021crabnet,
+  author  = {Wang, Anthony Yu-Tung and Kauwe, Steven K. and Murdock, Ryan J. and Sparks, Taylor D.},
+  title   = {{Compositionally Restricted Attention-Based Network} for Materials Property Predictions},
+  journal = {npj Computational Materials},
+  year    = {2021},
+  volume  = {7},
+  pages   = {77},
+  doi     = {10.1038/s41524-021-00545-1}
+}
+
+@article{jung2024bandgaps,
+  author  = {Jung, Su Geun and others},
+  title   = {Automatic Prediction of Band Gaps of Inorganic Materials Using Machine Learning},
+  journal = {Journal of Chemical Information and Modeling},
+  year    = {2024},
+  doi     = {10.1021/acs.jcim.3c01897}
+}
+
+@article{agrawal2016highthroughput,
+  author  = {Agrawal, Ankit and Choudhary, Alok},
+  title   = {Perspective: Materials Informatics and Big Data: Realization of the Fourth Paradigm of Science in Materials Science},
+  journal = {APL Materials},
+  year    = {2016},
+  volume  = {4},
+  pages   = {053208},
+  doi     = {10.1063/1.4946894}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% E. ML methods actually used or directly compared
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@inproceedings{ke2017lightgbm,
+  author    = {Ke, Guolin and Meng, Qi and Finley, Thomas and Wang, Taifeng and Chen, Wei and Ma, Weidong and Ye, Qiwei and Liu, Tie-Yan},
+  title     = {{LightGBM}: A Highly Efficient Gradient Boosting Decision Tree},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2017},
+  volume    = {30},
+  pages     = {3146--3154}
+}
+
+@inproceedings{rashmi2015dart,
+  author    = {Rashmi, K. V. and Gilad-Bachrach, Ran},
+  title     = {{DART}: Dropouts Meet Multiple Additive Regression Trees},
+  booktitle = {Proceedings of the Eighteenth International Conference on Artificial Intelligence and Statistics},
+  year      = {2015},
+  pages     = {489--497}
+}
+
+@inproceedings{chen2016xgboost,
+  author    = {Chen, Tianqi and Guestrin, Carlos},
+  title     = {{XGBoost}: A Scalable Tree Boosting System},
+  booktitle = {Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining},
+  year      = {2016},
+  pages     = {785--794},
+  doi       = {10.1145/2939672.2939785}
+}
+
+@inproceedings{dorogush2018catboost,
+  author    = {Dorogush, Anna Veronika and Ershov, Vasily and Gulin, Andrey},
+  title     = {{CatBoost}: Gradient Boosting with Categorical Features Support},
+  booktitle = {Workshop on ML Systems at NeurIPS},
+  year      = {2018}
+}
+
+@article{breiman2001randomforest,
+  author  = {Breiman, Leo},
+  title   = {Random Forests},
+  journal = {Machine Learning},
+  year    = {2001},
+  volume  = {45},
+  pages   = {5--32},
+  doi     = {10.1023/A:1010933404324}
+}
+
+@article{cortes1995svm,
+  author  = {Cortes, Corinna and Vapnik, Vladimir},
+  title   = {Support-Vector Networks},
+  journal = {Machine Learning},
+  year    = {1995},
+  volume  = {20},
+  pages   = {273--297},
+  doi     = {10.1007/BF00994018}
+}
+
+@article{chang2011libsvm,
+  author  = {Chang, Chih-Chung and Lin, Chih-Jen},
+  title   = {{LIBSVM}: A Library for Support Vector Machines},
+  journal = {ACM Transactions on Intelligent Systems and Technology},
+  year    = {2011},
+  volume  = {2},
+  number  = {3},
+  pages   = {27:1--27:27},
+  doi     = {10.1145/1961189.1961199}
+}
+
+@article{friedman2001gbm,
+  author  = {Friedman, Jerome H.},
+  title   = {Greedy Function Approximation: A Gradient Boosting Machine},
+  journal = {Annals of Statistics},
+  year    = {2001},
+  volume  = {29},
+  number  = {5},
+  pages   = {1189--1232},
+  doi     = {10.1214/aos/1013203451}
+}
+
+@article{pedregosa2011sklearn,
+  author  = {Pedregosa, Fabian and Varoquaux, Ga{\"e}l and Gramfort, Alexandre and Michel, Vincent and Thirion, Bertrand and Grisel, Olivier and Blondel, Mathieu and Prettenhofer, Peter and Weiss, Ron and Dubourg, Vincent and VanderPlas, Jake and Passos, Alexandre and Cournapeau, David and Brucher, Matthieu and Perrot, Matthieu and Duchesnay, {\'E}douard},
+  title   = {Scikit-learn: Machine Learning in {Python}},
+  journal = {Journal of Machine Learning Research},
+  year    = {2011},
+  volume  = {12},
+  pages   = {2825--2830}
+}
+
+@article{hollmann2025tabpfn,
+  author  = {Hollmann, Noah and M{\"u}ller, Samuel and Purucker, Lennart and others},
+  title   = {Accurate Predictions on Small Data with a Tabular Foundation Model},
+  journal = {Nature},
+  year    = {2025}
+}
+
+@inproceedings{lundberg2017shap,
+  author    = {Lundberg, Scott M. and Lee, Su-In},
+  title     = {A Unified Approach to Interpreting Model Predictions},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2017},
+  volume    = {30}
+}
+
+@inproceedings{guo2017calibration,
+  author    = {Guo, Chuan and Pleiss, Geoff and Sun, Yu and Weinberger, Kilian Q.},
+  title     = {On Calibration of Modern Neural Networks},
+  booktitle = {Proceedings of the 34th International Conference on Machine Learning},
+  year      = {2017},
+  pages     = {1321--1330}
+}
+
+@article{kapoor2023leakage,
+  author  = {Kapoor, Sayash and Narayanan, Arvind},
+  title   = {Leakage and the Reproducibility Crisis in Machine-Learning-Based Science},
+  journal = {Patterns},
+  year    = {2023},
+  volume  = {4},
+  number  = {9},
+  pages   = {100804},
+  doi     = {10.1016/j.patter.2023.100804}
+}
+
+@article{shwartz2022tabular,
+  author  = {Shwartz-Ziv, Ravid and Armon, Amitai},
+  title   = {Tabular Data: Deep Learning Is Not All You Need},
+  journal = {Information Fusion},
+  year    = {2022},
+  volume  = {81},
+  pages   = {84--90},
+  doi     = {10.1016/j.inffus.2021.11.011}
+}
+
+@inproceedings{grinsztajn2022treebased,
+  author    = {Grinsztajn, L{\'e}o and Oyallon, Edouard and Varoquaux, Ga{\"e}l},
+  title     = {Why Do Tree-Based Models Still Outperform Deep Learning on Typical Tabular Data?},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2022}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% F. Spectral preprocessing, PCA, baseline correction, and chemometrics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@article{savitzky1964smoothing,
+  author  = {Savitzky, Abraham and Golay, Marcel J. E.},
+  title   = {Smoothing and Differentiation of Data by Simplified Least Squares Procedures},
+  journal = {Analytical Chemistry},
+  year    = {1964},
+  volume  = {36},
+  number  = {8},
+  pages   = {1627--1639},
+  doi     = {10.1021/ac60214a047}
+}
+
+@article{zhang2010airpls,
+  author  = {Zhang, Zhimin and Chen, Shan and Liang, Yizeng},
+  title   = {Baseline Correction Using Adaptive Iteratively Reweighted Penalized Least Squares},
+  journal = {Analyst},
+  year    = {2010},
+  volume  = {135},
+  pages   = {1138--1146},
+  doi     = {10.1039/B922045C}
+}
+
+@article{baek2015arpls,
+  author  = {Baek, Seung-Jin and Park, Aaron and Ahn, Young-Jin and Choo, Jaebum},
+  title   = {Baseline Correction Using Asymmetrically Reweighted Penalized Least Squares Smoothing},
+  journal = {Analyst},
+  year    = {2015},
+  volume  = {140},
+  pages   = {250--257},
+  doi     = {10.1039/C4AN01061B}
+}
+
+@article{rinnan2009preprocessing,
+  author  = {Rinnan, \AA{}smund and van den Berg, Frans and Engelsen, S\o{}ren B.},
+  title   = {Review of the Most Common Pre-Processing Techniques for Near-Infrared Spectra},
+  journal = {TrAC Trends in Analytical Chemistry},
+  year    = {2009},
+  volume  = {28},
+  number  = {10},
+  pages   = {1201--1222},
+  doi     = {10.1016/j.trac.2009.07.007}
+}
+
+@book{jolliffe2002pca,
+  author    = {Jolliffe, Ian T.},
+  title     = {Principal Component Analysis},
+  edition   = {2},
+  publisher = {Springer},
+  year      = {2002},
+  doi       = {10.1007/b98835}
+}
+
+@article{hotelling1933pca,
+  author  = {Hotelling, Harold},
+  title   = {Analysis of a Complex of Statistical Variables into Principal Components},
+  journal = {Journal of Educational Psychology},
+  year    = {1933},
+  volume  = {24},
+  number  = {6},
+  pages   = {417--441},
+  doi     = {10.1037/h0071325}
+}
+
+@book{brereton2018chemometrics,
+  author    = {Brereton, Richard G.},
+  title     = {Chemometrics: Data Driven Extraction for Science},
+  publisher = {Wiley},
+  year      = {2018}
+}
+
+@article{wehrens2011chemometrics,
+  author  = {Wehrens, Ron},
+  title   = {Chemometrics with {R}: Multivariate Data Analysis in the Natural Sciences and Life Sciences},
+  journal = {Journal of Statistical Software},
+  year    = {2011},
+  volume  = {44},
+  number  = {4},
+  pages   = {1--3}
+}

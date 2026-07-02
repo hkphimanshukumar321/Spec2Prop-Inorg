@@ -1,0 +1,15 @@
+\begin{table}[htbp]
+\caption{Dataset subset statistics for Spec2Prop-InorgBench}
+\label{tab:dataset_subsets}
+\centering
+\begin{tabularx}{\textwidth}{l c c c c X}
+\toprule
+\textbf{Subset} & \textbf{Samples} & \textbf{Raman} & \textbf{XRD} & \textbf{Property labels} & \textbf{Main use} \\
+\midrule
+Full spectra & 4,118 & Yes & Partial & Partial & Pretraining, exploration \\
+Clean inorganic & 4,027 & Yes & Partial & Partial & Family classification \\
+Property-matched & 1,844 & Yes & Partial & Yes & Spectra-to-property \\
+Raman--XRD linked & 1,462 & Yes & Yes & Partial & Multimodal fusion \\
+\bottomrule
+\end{tabularx}
+\end{table}

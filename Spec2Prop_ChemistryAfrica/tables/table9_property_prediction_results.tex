@@ -1,0 +1,14 @@
+\begin{table}[htbp]
+\caption{Spectra-to-property prediction results}
+\label{tab:property_results}
+\centering
+\begin{tabularx}{\textwidth}{l l c c X}
+\toprule
+\textbf{Task} & \textbf{Best model} & \textbf{Accuracy (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Chemistry relevance} \\
+\midrule
+Band-gap class & LightGBM-DART & 65.40 & 61.09 & Electronic property screening \\
+Metal/non-metal & LightGBM-DART & 72.10 & 67.56 & Conductivity approximation \\
+Formation-energy & LightGBM-DART & 82.50 & 78.91 & Thermodynamic stability \\
+\bottomrule
+\end{tabularx}
+\end{table}

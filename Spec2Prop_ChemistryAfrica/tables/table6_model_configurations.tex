@@ -1,0 +1,92 @@
+\begin{table*}[htbp]
+\centering
+\caption{Machine-learning model configurations used in Spec2Prop-InorgBench.}
+\label{tab:models}
+\footnotesize
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{p{0.18\textwidth} p{0.21\textwidth} p{0.16\textwidth} p{0.19\textwidth} X}
+\toprule
+\textbf{Model} & \textbf{Input representation} & \textbf{Output task} & \textbf{Purpose} & \textbf{Key settings / notes} \
+\midrule
+
+Logistic Regression
+& Raw Raman or PCA-reduced Raman features
+& 9-class family classification
+& Linear baseline
+& Used to evaluate whether family separation is approximately linear in raw/PCA spectral space; L2 regularization used. \
+
+SVM
+& PCA-reduced Raman features and raw Raman ablation
+& 9-class family classification
+& Nonlinear baseline
+& RBF-kernel SVM baseline for nonlinear decision boundaries in spectral feature space. \
+
+kNN
+& PCA-reduced Raman features and raw Raman ablation
+& 9-class family classification
+& Instance-based baseline
+& Used as a simple spectral-neighbourhood baseline to test whether local similarity alone is sufficient for family screening. \
+
+Random Forest
+& PCA/domain spectral features
+& 9-class family classification and property baselines
+& Tree-ensemble baseline
+& Used to evaluate the strength of non-boosted tree ensembles on sparse spectral descriptors and PCA features. \
+
+XGBoost
+& PCA/domain spectral features; raw and descriptor-only ablations
+& Family classification and property baselines
+& Gradient-boosted tree baseline
+& Main boosted-tree comparison model. Hybrid experiments used up to 1000 estimators, maximum depth 6, and early stopping where applicable. \
+
+LightGBM-DART, PCA+Domain ablation
+& 158-d feature vector: 32 PCA features + 126 domain descriptors
+& 9-class family classification
+& Compact ablation model
+& DART boosting with balanced class weights. This compact feature setting achieved the strongest top-1 accuracy among PCA+domain-only models and is reported as an ablation. \
+
+LightGBM-DART, PCA+Domain+Prototype
+& 222-d feature vector: PCA features + domain descriptors + prototype-similarity features
+& 9-class family classification with top-$k$ confidence reporting
+& Final Spec2Prop-Edge deployment model
+& Deployment-oriented classifier using DART boosting, 1000 estimators, maximum depth 6, and balanced class weights. This model supports top-$k$ prediction, confidence scoring, and reject-option screening. \
+
+SimpleCNN1D
+& 2048-point Raman vector
+& Family classification and property baseline
+& End-to-end neural baseline
+& One-dimensional convolutional baseline trained directly on Raman spectra. Used to compare learned spectral features against chemistry-aware descriptors. \
+
+LiteSpecNet / Spec2PropLite
+& 2048-point Raman vector + descriptor features
+& Spectra-to-property prediction
+& Edge-friendly fusion model
+& Lightweight Raman encoder combined with descriptor features. Used for property prediction, especially metal/non-metal classification. \
+
+RamanFormer1D
+& 2048-point Raman vector
+& Family classification
+& Transformer-based neural baseline
+& Spectral transformer baseline used to test whether attention-based sequence modelling improves Raman family classification. \
+
+DescriptorMLP
+& Chemistry/domain descriptor vector
+& Spectra-to-property prediction
+& Descriptor-only neural baseline
+& Multi-layer perceptron trained on descriptor features only; used to test how much property information is captured by engineered descriptors. \
+
+FusionSpec2PropNet
+& Raman CNN embedding + descriptor embedding
+& Multi-task property prediction
+& Raman--descriptor fusion model
+& Combines a Raman CNN encoder and DescriptorMLP encoder, concatenates embeddings, applies a fusion layer, and predicts band-gap class, metal/non-metal class, and formation-energy class. \
+
+DualBranchRamanXRDNet
+& Raman vector + XRD vector, each 2048 points
+& 9-class family classification
+& Multimodal Raman--XRD baseline
+& Dual-branch neural model with separate Raman and XRD encoders followed by feature fusion. Used to evaluate complementarity between vibrational and crystallographic fingerprints. \
+
+\bottomrule
+\end{tabularx}
+\end{table*}

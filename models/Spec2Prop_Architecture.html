@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spec2Prop-Edge Architecture</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .figure-container {
+            width: 100%;
+            max-width: 1600px;
+            background: #ffffff;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+        }
+        .caption {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 1400px;
+            text-align: justify;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #212529;
+            border-top: 1px solid #dee2e6;
+            padding-top: 20px;
+        }
+    </style>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                fontFamily: "'Inter', Arial, sans-serif",
+                primaryColor: '#ffffff',
+                primaryTextColor: '#212529',
+                primaryBorderColor: '#003366',
+                lineColor: '#495057',
+                secondaryColor: '#f8f9fa',
+                tertiaryColor: '#ffffff',
+                clusterBkg: '#ffffff',
+                clusterBorder: '#ced4da',
+                fontSize: '14px'
+            },
+            flowchart: {
+                htmlLabels: true,
+                curve: 'basis',
+                nodeSpacing: 40,
+                rankSpacing: 50,
+                padding: 15
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="figure-container">
+        <div class="mermaid">
+        flowchart TB
+            classDef mainFlow fill:#ffffff,stroke:#003366,stroke-width:2px,color:#000000,rx:6px,ry:6px
+            classDef optFlow fill:#f8f9fa,stroke:#adb5bd,stroke-width:2px,stroke-dasharray: 5 5,color:#495057,rx:6px,ry:6px
+            classDef prepStep fill:#f1f3f5,stroke:#4dabf7,stroke-width:1.5px,color:#212529,rx:4px,ry:4px
+            classDef featureNode fill:#e7f5ff,stroke:#339af0,stroke-width:1.5px,color:#212529,rx:4px,ry:4px
+            classDef reportNode fill:#f8f9fa,stroke:#003366,stroke-width:2.5px,color:#212529,rx:6px,ry:6px
+            classDef demoNode fill:#f1f3f5,stroke:#868e96,stroke-width:1.5px,color:#212529,rx:4px,ry:4px
+
+            subgraph Pipeline [Spec2Prop-Edge Core Architecture]
+                direction LR
+                
+                subgraph S1 [1. Input Source]
+                    direction TB
+                    Raman["<b>Raw Raman file</b><br/><small>(CSV/TXT)</small><br/><small>Raman shift vs intensity</small>"]:::mainFlow
+                    XRD["<b>Raw XRD file</b><br/><small>(Optional branch)</small><br/><small>2θ angle vs intensity</small>"]:::optFlow
+                end
+                
+                subgraph S2 [2. Runtime Spectral Preprocessing]
+                    direction TB
+                    P1["1. File parsing"]:::prepStep
+                    P2["2. Invalid row removal"]:::prepStep
+                    P3["3. Axis sorting & deduplication"]:::prepStep
+                    P4["4. Interpolation to fixed grid"]:::prepStep
+                    P5["5. Baseline correction"]:::prepStep
+                    P6["6. Smoothing"]:::prepStep
+                    P7["7. Normalization"]:::prepStep
+                    P8["<b>8. 2048-point spectral vector</b>"]:::prepStep
+                    P1 --> P2 --> P3 --> P4 --> P5 --> P6 --> P7 --> P8
+                end
+                
+                Raman ==>|Primary| P1
+                XRD -.->|Optional| P1
+                
+                subgraph SV [Spectral Vectors]
+                    direction TB
+                    V_Raman["<b>Raman vector</b><br/>1 × 2048"]:::mainFlow
+                    V_XRD["<b>XRD vector</b><br/>1 × 2048"]:::optFlow
+                end
+                
+                P8 ==> V_Raman
+                P8 -.-> V_XRD
+                
+                subgraph S3 [3. Hybrid Spectral Feature Extraction]
+                    direction TB
+                    FA["<b>Branch A: PCA global shape features</b><br/><small>Output: 32 PCA components</small>"]:::featureNode
+                    FB["<b>Branch B: Expert peak features</b><br/><small>top peak positions, intensities, widths</small><br/><small>Output: 30 peak features</small>"]:::featureNode
+                    FC["<b>Branch C: Spectral moments & diagnostic ratios</b><br/><small>mean, std, skewness, kurtosis</small><br/><small>Output: 32 features</small>"]:::featureNode
+                    FD["<b>Branch D: Coarse subsampled spectrum</b><br/><small>compact shape representation</small><br/><small>Output: 64 features</small>"]:::featureNode
+                    FOpt["<b>Optional reference-library similarity</b><br/><small>cosine sim, correlation, nearest match</small><br/><i>[Future Enhancement]</i>"]:::optFlow
+                    
+                    Concat["<b>Feature Concatenation</b><br/><b>158-dimensional model-ready vector</b><br/><small>(32 PCA + 126 expert/domain spectral features)</small>"]:::mainFlow
+                    
+                    FA --> Concat
+                    FB --> Concat
+                    FC --> Concat
+                    FD --> Concat
+                    FOpt -.-> Concat
+                end
+                
+                V_Raman ==> FA
+                V_Raman ==> FB
+                V_Raman ==> FC
+                V_Raman ==> FD
+                V_Raman -.-> FOpt
+                
+                subgraph S4 [4. Classifier]
+                    direction TB
+                    LGBM["<b>LightGBM-DART Classifier</b><br/><br/><small>• gradient-boosted decision trees</small><br/><small>• dropout-based tree boosting</small><br/><small>• robust for small spectral datasets</small><br/><small>• handles heterogeneous spectral features</small>"]:::reportNode
+                end
+                
+                Concat ==> LGBM
+                
+                subgraph S5 [5. Confidence-Aware Screening Report]
+                    direction TB
+                    Out1["<b>1. Predicted chemical family<br/>2. Top-3 candidate families<br/>3. Confidence score<br/>4. Prediction quality (High/Med/Low)<br/>5. Suggested next action<br/>6. Screening-level disclaimer</b>"]:::reportNode
+                    Tags["<i>Tags: Silicate, Oxide, Carbonate,<br/>Sulfate, Phosphate, Sulfide,<br/>Halide, Borate, Other/Rare</i>"]:::prepStep
+                    Disc["<b>Output is a screening suggestion,<br/>not final experimental confirmation.</b>"]:::mainFlow
+                    
+                    Out1 --- Tags --- Disc
+                end
+                
+                LGBM ==> Out1
+            end
+
+            subgraph S6 [Dataset-backed validation and deployment demo]
+                direction LR
+                D1["<b>Spec2Prop-InorgBench</b><br/><small>• RRUFF Raman/XRD</small><br/><small>• formula-normalized metadata</small><br/><small>• Matbench/MP-derived property labels</small>"]:::demoNode
+                D2["<b>Held-out test sample</b><br/><small>• real raw source spectrum</small><br/><small>• leakage-safe test split</small>"]:::demoNode
+                D3["<b>Spec2Prop-Edge UI</b><br/><small>• raw spectrum plot</small><br/><small>• runtime preprocessing animation</small><br/><small>• live model inference</small><br/><small>• top-k report</small>"]:::demoNode
+                
+                D1 ===> D2 ===> D3
+            end
+
+            Pipeline ~~~ S6
+        </div>
+    </div>
+    <div class="caption">
+        <strong>Figure: Architecture of the Spec2Prop-Edge screening pipeline.</strong> Raw Raman/XRD spectral files are parsed and preprocessed at runtime into fixed 2048-point spectral vectors. PCA, peak-based, band-ratio, moment, and compact spectral features are concatenated into a 158-dimensional representation and classified using a LightGBM-DART model. The system returns top-k inorganic family suggestions with confidence scores and a screening-level recommendation for scientist verification. The bottom panel illustrates the dataset-backed validation where models trained on the Spec2Prop-InorgBench are deployed on a web UI for held-out test samples.
+    </div>
+</body>
+</html>

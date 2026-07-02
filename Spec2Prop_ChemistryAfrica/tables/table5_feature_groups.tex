@@ -1,0 +1,19 @@
+\begin{table}[htbp]
+\caption{Chemistry-aware spectral feature groups}
+\label{tab:feature_groups}
+\centering
+\begin{tabular}{lccl}
+\toprule
+\textbf{Feature group} & \textbf{Dimension} & \textbf{Used in final model} & \textbf{Chemical interpretation} \\
+\midrule
+PCA global-shape features & 32 & Yes & Broad spectral background and continuum \\
+Expert descriptors & 126 & Yes & Specialized extraction of diagnostic peaks \\
+\hspace{3mm} Peak statistics & 45 & Yes & Identification of primary vibrational modes \\
+\hspace{3mm} Spectral moments & 30 & Yes & Overall spectral mass and skewness \\
+\hspace{3mm} Diagnostic band ratios & 25 & Yes & Relative intensities of anion groups \\
+\hspace{3mm} Compact shape features & 26 & Yes & Low-resolution baseline approximation \\
+\midrule
+Total vector & 158 & Yes & \\
+\bottomrule
+\end{tabular}
+\end{table}

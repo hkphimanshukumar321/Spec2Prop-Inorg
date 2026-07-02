@@ -1,0 +1,68 @@
+\begin{table*}[htbp]
+\centering
+\caption{Open spectral, crystallographic, and materials-property resources used for constructing Spec2Prop-InorgBench.}
+\label{tab:data_sources}
+\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{p{0.16\textwidth} p{0.14\textwidth} p{0.22\textwidth} p{0.14\textwidth} X p{0.11\textwidth}}
+\toprule
+\textbf{Source} & \textbf{Data type} & \textbf{Main fields used} & \textbf{Linkage key} & \textbf{Role in benchmark} & \textbf{Status} \
+\midrule
+RRUFF Raman \cite{lafuente2015rruff,downs2006rruff}
+& Raman spectra
+& Raman shift, intensity, raw spectral files, sample metadata
+& RRUFF ID / sample ID
+& Primary spectral backbone for Raman-based inorganic family screening and feature extraction
+& Integrated \
+
+RRUFF XRD \cite{lafuente2015rruff,downs2006rruff}
+& Powder XRD patterns
+& $2\theta$ values, diffraction intensities, linked sample records
+& RRUFF ID / sample ID
+& Optional multimodal branch for combining vibrational and crystallographic fingerprints
+& Integrated \
+
+RRUFF metadata \cite{lafuente2015rruff}
+& Mineral chemistry
+& Mineral name, chemical formula, sample identifier, chemistry notes
+& RRUFF ID / formula
+& Formula normalization and inorganic chemical-family label construction
+& Integrated \
+
+Materials Project \cite{jain2013materialsproject}
+& Computed materials properties
+& Band gap, formation energy, metallicity-related information, reduced formula
+& Normalized reduced formula
+& Source of materials-property annotations used for spectra-to-property classification
+& Integrated \
+
+Matbench \cite{dunn2020matbench,riebesell2025matbenchdiscovery}
+& Benchmark property labels
+& Band-gap class, metal/non-metal class, formation-energy-related labels
+& Normalized reduced formula
+& Standardized property-label source for downstream materials-informatics tasks
+& Integrated \
+
+MLROD
+& Auxiliary Raman/mineral resource
+& Raman/mineral records and mixture-related information
+& Dataset-specific sample identifiers
+& Auxiliary reference for robustness analysis and future extension; not used as the primary sample-level backbone
+& Auxiliary \
+
+tmQM/tmQMg
+& Coordination-chemistry datasets
+& Transition-metal complex formulas and molecular/property metadata
+& Formula / complex identifier
+& Context resource for future transition-metal and coordination-chemistry expansion; not used as primary Raman/XRD training data
+& Auxiliary \
+
+Spec2Prop-InorgBench \cite{kumar2026spec2prop}
+& Curated benchmark
+& Cleaned Raman/XRD representations, family labels, property labels, split metadata
+& Internal sample ID
+& Final released benchmark for reproducible inorganic spectra-to-property screening
+& Released \
+\bottomrule
+\end{tabularx}
+\end{table*}

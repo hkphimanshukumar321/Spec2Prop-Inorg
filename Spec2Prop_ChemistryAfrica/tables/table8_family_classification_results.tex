@@ -1,0 +1,70 @@
+\begin{table*}[htbp]
+\centering
+\caption{Inorganic chemical-family classification performance on the clean inorganic subset of Spec2Prop-InorgBench ($N=4{,}027$). The task is a leakage-safe nine-class Raman-based family-screening problem over Borate, Carbonate, Halide, Other/Rare, Oxide, Phosphate, Silicate, Sulfate, and Sulfide. Accuracy measures top-1 correctness, while macro-F1 gives equal weight to all families and is therefore more informative under class imbalance. The 158-dimensional PCA+domain LightGBM-DART model is reported as a compact ablation, whereas the 222-dimensional PCA+domain+prototype LightGBM-DART model is the final Spec2Prop-Edge deployment model.}
+\label{tab:family_results}
+\footnotesize
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{p{0.22\textwidth} p{0.22\textwidth} c c X}
+\toprule
+\textbf{Model} & \textbf{Input representation} & \textbf{Accuracy (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Notes} \
+\midrule
+
+Logistic Regression
+& Raw Raman vector
+& 55.46
+& 45.04
+& Best logistic-regression baseline obtained using the raw 2048-point Raman representation. \
+
+SVM
+& PCA-128 Raman features
+& 48.18
+& 31.04
+& Best SVM baseline; nonlinear RBF kernel, but limited by class imbalance and spectral overlap. \
+
+kNN
+& PCA-64 Raman features
+& 51.82
+& 41.49
+& Instance-based spectral-neighbourhood baseline; useful for checking local similarity structure. \
+
+Random Forest
+& PCA-64 Raman features
+& 61.92
+& 49.43
+& Best macro-F1 Random Forest setting; tree ensembles handle sparse diagnostic peaks better than many raw neural baselines. \
+
+XGBoost
+& PCA-64 Raman features
+& 64.07
+& 52.55
+& Strongest traditional baseline among PCA-only classical models. \
+
+LightGBM-DART
+& 158-d PCA+domain features
+& 67.22
+& 56.57
+& Compact chemistry-aware ablation using 32 PCA global-shape features and 126 expert/domain spectral descriptors. \
+
+LightGBM-DART
+& 222-d PCA+domain+prototype features
+& 66.06
+& 59.21
+& Final Spec2Prop-Edge deployment model. Although top-1 accuracy is slightly lower than the 158-d ablation, macro-F1 improves and top-$k$/confidence-aware screening is stronger. \
+
+SimpleCNN1D
+& 2048-point Raman vector
+& TBD
+& TBD
+& End-to-end 1D-CNN family-classification baseline; insert exact test value only if available from the final run. \
+
+RamanFormer1D
+& 2048-point Raman vector
+& 25.17
+& 27.34
+& Transformer-based Raman spectral baseline from the final nine-class family-classification run. \
+
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+The comparison shows that chemistry-aware tree-based models are more suitable than purely end-to-end neural encoders for the current dataset scale. The 158-dimensional PCA+domain LightGBM-DART ablation achieved the highest top-1 accuracy, while the 222-dimensional PCA+domain+prototype deployment model achieved the best macro-F1 and stronger screening behaviour, including 87.42% top-3 accuracy and 95.53% top-5 accuracy.

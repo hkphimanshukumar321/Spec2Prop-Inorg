@@ -1,0 +1,44 @@
+\begin{table*}[htbp]
+\centering
+\caption{Leakage-safe evaluation protocol used for family classification, spectra-to-property prediction, multimodal analysis, and confidence-aware screening.}
+\label{tab:protocol}
+\footnotesize
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{p{0.17\textwidth} p{0.18\textwidth} X p{0.20\textwidth} X}
+\toprule
+\textbf{Task} & \textbf{Dataset subset} & \textbf{Split strategy} & \textbf{Metrics} & \textbf{Leakage control} \\
+\midrule
+
+Inorganic family classification
+& Clean inorganic subset ($N=4{,}027$)
+& 70/15/15 train--validation--test split, grouped by RRUFF ID and stratified by chemical family
+& Accuracy, macro-F1, weighted-F1, balanced accuracy, top-$k$ accuracy, confusion matrix
+& Samples sharing the same RRUFF identifier were kept within the same split. PCA, scalers, prototypes, and model parameters were fitted only on the training split. \\
+
+Spectra-to-property prediction
+& Property-matched inorganic subset ($N=1{,}844$)
+& 70/15/15 train--validation--test split, grouped by RRUFF ID and stratified where applicable by property class
+& Accuracy, macro-F1, macro-precision, macro-recall, per-class F1
+& Formula-derived property labels were matched before splitting; transformations and descriptor normalization were fitted using training data only. \\
+
+Raman--XRD multimodal classification
+& Raman--XRD linked inorganic subset ($N=1{,}462$)
+& 70/15/15 train--validation--test split using the same grouped-split logic
+& Accuracy, macro-F1, macro-precision, macro-recall, relative gain over Raman-only ablation
+& Raman and XRD records linked to the same sample or RRUFF identifier were assigned to the same split to avoid paired-modality leakage. \\
+
+Confidence-aware screening
+& Held-out test set from the deployment model
+& Final model evaluated only on the untouched test split
+& Top-1/top-2/top-3/top-5 accuracy, confidence score, coverage, accepted-sample accuracy, accepted-sample macro-F1, abstention rate
+& Confidence thresholds were applied after test-set prediction. Low-confidence spectra were abstained rather than forced into final identification. \\
+
+External/demo evaluation
+& Dataset-backed held-out samples
+& Test samples selected only from leakage-safe held-out split
+& Top-$k$ candidate families, confidence tier, screening recommendation
+& Demo samples were not used for model fitting, scaler fitting, PCA fitting, or prototype construction. \\
+
+\bottomrule
+\end{tabularx}
+\end{table*}

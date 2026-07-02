@@ -1,0 +1,21 @@
+\begin{table}[htbp]
+\caption{Runtime preprocessing operations for raw Raman/XRD files}
+\label{tab:preprocessing}
+\centering
+
+\begin{tabular}{llll}
+\toprule
+\textbf{Step} & \textbf{Operation} & \textbf{Chemistry/spectral reason} & \textbf{Output} \\
+\midrule
+1 & Raw file parsing & Instruments export heterogeneous text formats & Array of (X, Y) \\
+2 & Invalid row removal & Cosmic rays and hardware errors yield NaNs & Cleaned array \\
+3 & Axis sorting & Wavenumber axes can be reversed & Ascending X \\
+4 & Duplicate removal & Multiple detector hits at same wavenumber & Unique X \\
+5 & Interpolation & Align to uniform grid (e.g., 200--1500 cm$^{-1}$) & 2048-d vector \\
+6 & Baseline correction & Remove fluorescence drift \cite{baek2015arpls} & Flattened vector \\
+7 & Savitzky--Golay & Smooth high-frequency instrumental noise & Smoothed vector \\
+8 & Min--Max normalization & Correct intensity variance across instruments & $[0, 1]$ scaled vector \\
+\bottomrule
+\end{tabular}
+
+\end{table}

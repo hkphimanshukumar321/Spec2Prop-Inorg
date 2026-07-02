@@ -1,0 +1,103 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="d1" name="Input and Preprocessing">
+    <mxGraphModel dx="1873" dy="1196" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="900" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=18;fontColor=#1A237E;" value="&lt;font style=&quot;font-size:18px;&quot;&gt;&lt;b&gt;Diagram 1 &amp;mdash; Input Sources &amp;amp; Runtime Spectral Preprocessing Pipeline&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="1700" x="40" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#283593;strokeWidth=2;dashed=0;arcSize=8;verticalAlign=top;fontFamily=Helvetica;fontSize=15;fontStyle=1;fontColor=#283593;labelBackgroundColor=#FFFFFF;spacingTop=5;container=0;" value="Input Sources" vertex="1">
+          <mxGeometry height="380" width="340" x="40" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#283593;strokeWidth=2;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=10;" value="&lt;b&gt;Raman Spectrometer Output&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;File format:&lt;/b&gt; CSV / TXT&lt;br/&gt;&lt;b&gt;X-axis:&lt;/b&gt; Raman shift (cm&lt;sup&gt;-1&lt;/sup&gt;)&lt;br/&gt;&lt;b&gt;Y-axis:&lt;/b&gt; Intensity (a.u.)&lt;br/&gt;&lt;b&gt;Physical meaning:&lt;/b&gt; Vibrational fingerprint&lt;br/&gt;of molecular bonds and crystal structure&lt;br/&gt;&lt;b&gt;Role:&lt;/b&gt; Primary input (v1 deployment)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="120" width="300" x="60" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#283593;strokeWidth=2;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=10;strokeDasharray=8 4;" value="&lt;b&gt;XRD Diffractometer Output&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;File format:&lt;/b&gt; CSV / TXT&lt;br/&gt;&lt;b&gt;X-axis:&lt;/b&gt; 2&amp;#x3b8; angle (degrees)&lt;br/&gt;&lt;b&gt;Y-axis:&lt;/b&gt; Intensity (counts)&lt;br/&gt;&lt;b&gt;Physical meaning:&lt;/b&gt; Structural fingerprint&lt;br/&gt;of crystallographic planes&lt;br/&gt;&lt;b&gt;Role:&lt;/b&gt; Optional / multimodal extension&lt;/font&gt;" vertex="1">
+          <mxGeometry height="120" width="300" x="60" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="6" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=10;fontColor=#2E7D32;" value="&lt;font style=&quot;font-size:10px;&quot;&gt;&lt;b&gt;Primary input&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="25" width="130" x="60" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=10;fontColor=#9E9E9E;" value="&lt;font style=&quot;font-size:10px;&quot;&gt;&lt;i&gt;Optional input&lt;/i&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="25" width="130" x="230" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#1565C0;strokeWidth=2;dashed=0;arcSize=8;verticalAlign=top;fontFamily=Helvetica;fontSize=15;fontStyle=1;fontColor=#1565C0;labelBackgroundColor=#FFFFFF;spacingTop=5;container=0;" value="Runtime Spectral Preprocessing (executed at inference time, not cached)" vertex="1">
+          <mxGeometry height="380" width="920" x="420" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontFamily=Helvetica;fontSize=11;fontStyle=1;arcSize=10;" value="&lt;b&gt;1. Raw File Parsing&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Read CSV/TXT, detect delimiter,&#xa;extract (x, y) columns&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="200" x="440" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontFamily=Helvetica;fontSize=11;fontStyle=1;arcSize=10;" value="&lt;b&gt;2. Invalid Row Removal&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Drop NaN, Inf, negative intensities,&#xa;non-numeric entries&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="200" x="650" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontFamily=Helvetica;fontSize=11;fontStyle=1;arcSize=10;" value="&lt;b&gt;3. Axis Sorting &amp;amp;&#xa;    Duplicate Removal&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Sort by wavenumber/angle,&#xa;remove duplicate x-values&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="200" x="860" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontFamily=Helvetica;fontSize=11;fontStyle=1;arcSize=10;" value="&lt;b&gt;4. Interpolation to&#xa;    Fixed Grid&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Cubic spline interpolation&#xa;to exactly 2048 equally-spaced points&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="200" x="1070" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontFamily=Helvetica;fontSize=11;fontStyle=1;arcSize=10;" value="&lt;b&gt;5. Baseline Correction&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Asymmetric least-squares (ALS)&#xa;or polynomial baseline subtraction&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="200" x="440" y="285" as="geometry" />
+        </mxCell>
+        <mxCell id="14" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontFamily=Helvetica;fontSize=11;fontStyle=1;arcSize=10;" value="&lt;b&gt;6. Savitzky-Golay&#xa;    Smoothing&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Polynomial smoothing filter&#xa;preserves peak shapes&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="200" x="650" y="285" as="geometry" />
+        </mxCell>
+        <mxCell id="15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontFamily=Helvetica;fontSize=11;fontStyle=1;arcSize=10;" value="&lt;b&gt;7. Min-Max&#xa;    Normalisation&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Scale intensities to [0, 1]&#xa;per-spectrum normalisation&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="200" x="860" y="285" as="geometry" />
+        </mxCell>
+        <mxCell id="16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0D47A1;strokeWidth=2;fontFamily=Helvetica;fontSize=11;fontStyle=1;arcSize=10;" value="&lt;b&gt;8. Output: 2048-point&#xa;    Spectral Vector&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;Fixed-length representation&#xa;ready for feature extraction&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="200" x="1070" y="285" as="geometry" />
+        </mxCell>
+        <mxCell id="17" edge="1" parent="1" source="9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#37474F;strokeWidth=2;fontFamily=Helvetica;fontSize=11;" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="18" edge="1" parent="1" source="10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#37474F;strokeWidth=2;fontFamily=Helvetica;fontSize=11;" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="19" edge="1" parent="1" source="11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#37474F;strokeWidth=2;fontFamily=Helvetica;fontSize=11;" target="12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="20" edge="1" parent="1" source="12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#37474F;strokeWidth=2;fontFamily=Helvetica;fontSize=11;" target="13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="21" edge="1" parent="1" source="13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#37474F;strokeWidth=2;fontFamily=Helvetica;fontSize=11;" target="14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="22" edge="1" parent="1" source="14" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#37474F;strokeWidth=2;fontFamily=Helvetica;fontSize=11;" target="15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="23" edge="1" parent="1" source="15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#37474F;strokeWidth=2;fontFamily=Helvetica;fontSize=11;" target="16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="24" edge="1" parent="1" source="4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1565C0;strokeWidth=3;fontFamily=Helvetica;fontSize=11;" target="9" value="Primary">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="25" edge="1" parent="1" source="5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#37474F;strokeWidth=2;fontFamily=Helvetica;fontSize=11;dashed=1;dashPattern=6 3;strokeColor=#9E9E9E;" target="9" value="Optional">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="26" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#0D47A1;strokeWidth=2;dashed=0;arcSize=8;verticalAlign=top;fontFamily=Helvetica;fontSize=15;fontStyle=1;fontColor=#0D47A1;labelBackgroundColor=#FFFFFF;spacingTop=5;container=0;" value="Preprocessed Output" vertex="1">
+          <mxGeometry height="380" width="380" x="1380" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="27" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0D47A1;strokeWidth=2;fontFamily=Helvetica;fontSize=13;fontStyle=1;arcSize=10;" value="&lt;b&gt;Raman Spectral Vector&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;Shape: [1 &amp;times; 2048]&lt;/b&gt;&lt;br/&gt;dtype: float32, range: [0, 1]&lt;br/&gt;Fixed grid: ~100&amp;ndash;4000 cm&lt;sup&gt;-1&lt;/sup&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="340" x="1400" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="28" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0D47A1;strokeWidth=2;fontFamily=Helvetica;fontSize=12;fontStyle=1;arcSize=10;strokeDasharray=8 4;" value="&lt;b&gt;XRD Spectral Vector (optional)&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;Shape: [1 &amp;times; 2048]&lt;/b&gt;&lt;br/&gt;dtype: float32, range: [0, 1]&lt;br/&gt;Fixed grid: 2&amp;#x3b8; range&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="340" x="1400" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="29" edge="1" parent="1" source="16" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1565C0;strokeWidth=3;fontFamily=Helvetica;fontSize=11;" target="27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="30" edge="1" parent="1" source="16" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#37474F;strokeWidth=2;fontFamily=Helvetica;fontSize=11;dashed=1;dashPattern=6 3;strokeColor=#9E9E9E;" target="28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="31" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#0D47A1;" value="&lt;font style=&quot;font-size:12px;&quot;&gt;&lt;b&gt;&amp;nbsp;Feature Extraction &amp;amp; Model Pipeline&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="340" x="1400" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="32" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=11;fontColor=#37474F;" value="&lt;font style=&quot;font-size:11px;&quot;&gt;&lt;b&gt;Figure (a):&lt;/b&gt; Input sources and runtime spectral preprocessing pipeline. Raw Raman spectrometer files (primary) or XRD diffractometer files (optional) are parsed, cleaned, interpolated to a fixed 2048-point grid, baseline-corrected, smoothed, and normalised at inference time. The resulting float32 spectral vectors are passed to the feature extraction and classification pipeline (Diagram 2). All preprocessing is performed at runtime on each new sample, not from pre-cached data.&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="1700" x="40" y="490" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
